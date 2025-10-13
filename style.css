@@ -1,0 +1,38 @@
+/* style.css */
+
+/* Basic Reset for Consistency */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  background-color: #f4f4f4; /* Light gray background */
+  color: #333; /* Dark text */
+  padding: 20px;
+}
+
+header {
+  background: #333; /* Dark header background */
+  color: #fff; /* White text */
+  padding: 10px 0;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+  margin: 0 15px;
+  font-weight: bold;
+}
+
+main {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
