@@ -3,30 +3,135 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FINAL PROJECT - Home</title>
+    <title>Salone Plant Doctor - Your Green Health Experts</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <header>
-      <h1>Welcome to the Final Project!</h1>
-      <nav>
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="service.html">Services</a>
-        <a href="contact.html">Contact</a>
+      <div class="logo">
+        <img src="logo-placeholder.png" alt="Salone Plant Doctor Logo" />
+      </div>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#diagnosis">Diagnosis</a></li>
+          <li><a href="#treatments">Treatments</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li><a href="#shop">Shop</a></li>
+        </ul>
       </nav>
+      <button class="auth-btn">Log In / Sign</button>
     </header>
 
     <main>
-      <h2>The Home Page</h2>
-      <p>
-        This is the starting point of our project. Feel free to explore the
-        navigation!
-      </p>
+      <section id="hero" class="container">
+        <div class="hero-content">
+          <h1>Your Green Health Experts</h1>
+          <button class="get-started-btn">Get Started</button>
+        </div>
+        <div class="hero-image-container">
+          <div class="scan-overlay-prompt">
+            Scan Your Plant for Free
+            <span class="icon">📷</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="services" class="container">
+        <h2>Services</h2>
+        <div class="service-cards-grid">
+          <div class="service-card" data-service="consultation">
+            <span class="icon">💬</span>
+            <h3>Online Consultation</h3>
+            <p>Discuss your plant's symptoms directly with an expert.</p>
+          </div>
+          <div class="service-card" data-service="kits">
+            <span class="icon">🪴</span>
+            <h3>Plant Care Kits</h3>
+            <p>Curated kits for common plant diseases and needs.</p>
+          </div>
+          <div class="service-card" data-service="diagnosis">
+            <span class="icon">🧪</span>
+            <h3>Instant Diagnosis</h3>
+            <p>Upload a photo for fast symptom analysis.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="main-scan-cta" class="container">
+        <button class="main-cta-bar">
+          <span class="icon">📸</span>
+          Scan Your Plant for Free
+        </button>
+      </section>
+
+      <section id="dashboard-content" class="container">
+        <div class="history-section">
+          <h2>History</h2>
+          <div class="history-grid">
+            <div class="history-item">
+              <img src="plant-icon-1.png" alt="Yams Say & Orchids" />
+              <p>Yams Say & Orchids</p>
+            </div>
+            <div class="history-item">
+              <img src="plant-icon-2.png" alt="Semen Nä" />
+              <p>Semen Nä</p>
+            </div>
+            <div class="history-item">
+              <img src="plant-icon-3.png" alt="Treat Donate" />
+              <p>Treat Donate</p>
+            </div>
+            <div class="history-item">
+              <img src="plant-icon-4.png" alt="Floral Sense" />
+              <p>Floral Sense</p>
+            </div>
+            <div class="history-item">
+              <img src="plant-icon-5.png" alt="Roselal Manade" />
+              <p>Roselal Manade</p>
+            </div>
+          </div>
+          <a href="#" class="view-all">View All History</a>
+        </div>
+
+        <div class="expert-section">
+          <h2>Chat with Expert</h2>
+          <div class="expert-profile">
+            <img src="expert-avatar-1.png" alt="Expert 1" />
+            <img src="expert-avatar-2.png" alt="Expert 2" />
+          </div>
+
+          <h2>Treatment Plan</h2>
+          <div class="treatment-details">
+            <p>Toalla RRR</p>
+            <button>Shop</button>
+          </div>
+          <div class="treatment-details">
+            <p>Fertilizer</p>
+            <button>Shop</button>
+          </div>
+          <div class="treatment-details">
+            <p>Plants</p>
+            <button class="primary-btn">Shop</button>
+          </div>
+        </div>
+      </section>
     </main>
 
     <footer>
-      <p>&copy; 2025 Final Project. All rights reserved.</p>
+      <p>&copy; Salone Plant Doctor | Privacy Policy | Terms of Service</p>
     </footer>
+
+    <nav id="mobile-nav">
+      <button data-target="home">Home</button>
+      <button data-target="history">History</button>
+      <button class="scan-diagnos-btn" data-target="scan">
+        Scan Plant Diagnosis
+      </button>
+      <button data-target="chat">Chat</button>
+      <button data-target="shop">Shop</button>
+    </nav>
+
+    <script src="script.js"></script>
   </body>
 </html>
