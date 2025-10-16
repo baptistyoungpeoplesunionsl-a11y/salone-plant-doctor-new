@@ -47,3 +47,52 @@ navButtons.forEach((button) => {
     }
   });
 });
+// Function to add the green gradient hover effect to service cards
+function initServiceCardHovers() {
+  // 1. Select all service card links
+  const serviceCards = document.querySelectorAll(
+    ".service-cards-grid a.service-card"
+  );
+
+  // 2. Loop through each card and attach listeners
+  serviceCards.forEach((card) => {
+    // Add the class when the cursor enters the card
+    card.addEventListener("mouseover", function () {
+      // Use this.classList.add to target the specific card being hovered
+      this.classList.add("hover-gradient");
+    });
+
+    // Remove the class when the cursor leaves the card
+    card.addEventListener("mouseout", function () {
+      // Use this.classList.remove to target the specific card being hovered
+      this.classList.remove("hover-gradient");
+    });
+  });
+}
+
+// 3. Call the function when the page loads
+// This ensures the code runs only after all HTML elements are available
+document.addEventListener("DOMContentLoaded", initServiceCardHovers);
+// Function to add the green gradient hover effect to service cards
+function initServiceCardHovers() {
+  // Select all service card links
+  const serviceCards = document.querySelectorAll(
+    ".service-cards-grid a.service-card"
+  );
+
+  // Loop through each card and attach listeners
+  serviceCards.forEach((card) => {
+    // Add the class when the cursor enters the card
+    card.addEventListener("mouseover", function () {
+      this.classList.add("hover-gradient");
+    });
+
+    // Remove the class when the cursor leaves the card
+    card.addEventListener("mouseout", function () {
+      this.classList.remove("hover-gradient");
+    });
+  });
+}
+
+// Call the function when the page loads
+document.addEventListener("DOMContentLoaded", initServiceCardHovers);
