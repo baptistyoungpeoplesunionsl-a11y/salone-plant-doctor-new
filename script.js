@@ -96,3 +96,132 @@ function initServiceCardHovers() {
 
 // Call the function when the page loads
 document.addEventListener("DOMContentLoaded", initServiceCardHovers);
+// FINAL_PROJECT/script.js
+
+// ----------------------------------------------------
+// 1. E-COMMERCE: Local Storage Cart Management
+// ----------------------------------------------------
+
+const CART_STORAGE_KEY = "salonePlantDoctorCart";
+
+/**
+ * Loads the current cart from Local Storage.
+ * @returns {Array} The cart array or an empty array if none exists.
+ */
+function loadCart() {
+  const cartJson = localStorage.getItem(CART_STORAGE_KEY);
+  return cartJson ? JSON.parse(cartJson) : [];
+}
+
+/**
+ * Saves the current cart array to Local Storage.
+ * @param {Array} cart - The cart array to save.
+ */
+function saveCart(cart) {
+  localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+  updateCartCount();
+}
+
+/**
+ * Adds an item to the cart and redirects to checkout.
+ * This is a simplified function for our manual OM checkout.
+ * @param {string} name - Product name.
+ * @param {number} price - Product price (in Leones).
+ */
+function addItemToCartAndCheckout(name, price) {
+  // 1. Clear the old cart (since we only support one item per manual checkout for now)
+  const cart = [{ name, price }];
+
+  // 2. Save the new cart
+  saveCart(cart);
+
+  // 3. Alert user (for feedback) and redirect
+  alert(
+    `Added ${name} (Le ${price.toLocaleString()}) to cart. Redirecting to Checkout.`
+  );
+  window.location.href = "./pages/checkout.html";
+}
+
+// ----------------------------------------------------
+// 2. UX: Dynamic Header & Mobile Nav Management
+// ----------------------------------------------------
+
+/**
+ * Updates the cart counter display in the header/mobile nav.
+ */
+function updateCartCount() {
+  const cart = loadCart();
+  const count = cart.length;
+
+  // Assuming you have an element with the class '.cart-count' in your header/mobile nav
+  const cartCounters = document.querySelectorAll(".cart-count");
+  cartCounters.forEach((counter) => {
+    counter.textContent = count;
+    counter.style.display = count > 0 ? "inline-block" : "none";
+  });
+}
+
+// ----------------------------------------------------
+// 3. CHECKOUT PAGE LOGIC (pages/checkout.html)
+// ----------------------------------------------------
+
+/**
+ * Populates the order summary and calculates the total on the checkout page.
+ */
+function displayCheckoutSummary() {
+  // Only run this function if we are on the checkout page
+  if (!document.getElementById("display-total")) return;
+
+  const cart = loadCart();
+  if (cart.length === 0) {
+    // If the cart is empty, redirect them back to the shop
+    alert("Your cart is empty. Please add an item from the shop.");
+    window.location.href = "./shop.html";
+    return;
+  }
+
+  const total = cart.reduce((sum, item) => sum + item.price, 0);
+  const itemNames = cart.map((item) => item.name).join(", ");
+
+  // Update the visual display
+  document.getElementById("display-total").textContent = total.toLocaleString();
+  document
+    .getElementById("order-summary")
+    .querySelector("p:last-child").textContent = `(Items: ${itemNames})`;
+}
+
+// ----------------------------------------------------
+// 4. Initialization
+// ----------------------------------------------------
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Update the cart count on every page load
+  updateCartCount();
+
+  // Initialize checkout summary (only runs on checkout.html)
+  displayCheckoutSummary();
+
+  // Attach click listeners to all "Buy Now" buttons on the shop page
+  document
+    .querySelectorAll(".product-card .add-to-cart-btn")
+    .forEach((button) => {
+      button.addEventListener("click", (event) => {
+        // Prevent the default button action
+        event.preventDefault();
+
+        // Navigate up to the product card container
+        const card = event.target.closest(".product-card");
+
+        // Safely retrieve product details from the card
+        const name = card.querySelector(".product-name").textContent;
+        // Extract the price, assuming the format "Le 45,000"
+        const priceText = card.querySelector(".product-price").textContent;
+        const price = parseInt(
+          priceText.replace("Le", "").replace(/,/g, "").trim()
+        );
+
+        // Add the item and redirect
+        addItemToCartAndCheckout(name, price);
+      });
+    });
+});

@@ -467,3 +467,275 @@ footer {
     text-align: center;
   }
 }
+/* 7. Shop & E-commerce Styles */
+
+.shop-layout {
+  /* Uses CSS Grid for the main shop structure */
+  display: grid;
+  grid-template-columns: 250px 1fr; /* Fixed sidebar width, flexible product area */
+  gap: 30px;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+/* Sidebar Styles */
+.shop-sidebar {
+  padding: 20px;
+  background-color: var(--color-white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+  height: fit-content; /* Stops it from stretching */
+}
+
+.shop-sidebar h3 {
+  color: var(--color-primary);
+  margin-top: 15px;
+  border-bottom: 1px solid var(--color-secondary);
+  padding-bottom: 5px;
+  margin-bottom: 15px;
+}
+
+.category-list {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 30px;
+}
+
+.category-list a {
+  display: block;
+  padding: 8px 0;
+  color: var(--color-text);
+  transition: color 0.3s, background-color 0.3s;
+  border-radius: 4px;
+}
+
+.category-list a:hover,
+.category-list a.active {
+  color: var(--color-primary-dark);
+  font-weight: 600;
+}
+
+/* Product Grid Styles */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(250px, 1fr)
+  ); /* Responsive grid columns */
+  gap: 20px;
+}
+
+.product-card {
+  background-color: var(--color-white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+  padding: 15px;
+  text-align: center;
+  transition: transform 0.3s;
+}
+
+.product-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.product-image {
+  width: 100%;
+  height: 150px; /* Uniform image size */
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.product-name {
+  font-size: 1.1rem;
+  color: var(--color-primary-dark);
+  margin-bottom: 5px;
+}
+
+.product-price {
+  font-weight: bold;
+  color: var(--color-primary);
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+}
+
+.product-desc {
+  font-size: 0.9rem;
+  color: var(--color-text-light);
+  margin-bottom: 15px;
+  min-height: 40px; /* Ensure description line height is consistent */
+}
+
+.add-to-cart-btn {
+  width: 100%;
+  border-radius: 4px;
+  padding: 8px;
+  font-weight: 600;
+}
+
+/* Mobile Responsiveness for Shop Layout */
+@media (max-width: 768px) {
+  .shop-layout {
+    /* On mobile, stack the sidebar and the product grid */
+    grid-template-columns: 1fr;
+  }
+
+  .shop-sidebar {
+    /* Sidebar sits above the products on mobile */
+    order: -1;
+  }
+
+  .product-grid {
+    /* Ensure product grid flows nicely on small screens */
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+}
+/* 8. Form & Checkout Styles */
+
+/* Base styling for form elements to look clean and structured */
+.checkout-form-container {
+  background-color: var(--color-white);
+  padding: 30px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+}
+
+.checkout-form-container h3 {
+  font-size: 1.25rem;
+  color: var(--color-primary-dark);
+  margin-top: 25px;
+  margin-bottom: 15px;
+  border-bottom: 2px solid var(--color-secondary);
+  padding-bottom: 5px;
+}
+
+/* Grouping for labels and inputs */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: var(--color-text);
+}
+
+/* Styling for all input types (text, tel) and the textarea */
+.form-group input[type="text"],
+.form-group input[type="tel"],
+.form-group textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  color: var(--color-text);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: var(--color-primary);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(56, 142, 60, 0.2); /* Soft green glow */
+}
+
+.form-group textarea {
+  resize: vertical; /* Allows users to resize vertically but not horizontally */
+}
+
+/* Small text/helper text beneath inputs */
+.form-group small {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.85rem;
+  color: var(--color-text-light);
+}
+
+/* Styling for the mandatory payment/warning message */
+.checkout-form-container p.om-warning {
+  font-size: 1rem;
+  color: #cc0000; /* Use a strong color for the warning */
+  background-color: #ffebee; /* Light background for visibility */
+  padding: 15px;
+  border-radius: var(--border-radius);
+  margin-top: 20px;
+  border: 1px solid #cc0000;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Styling for the Order Summary box */
+#order-summary {
+  border: 1px dashed var(--color-primary);
+  padding: 20px;
+}
+
+/* Styling for the main Submit Button (Inherits .primary-btn but customized) */
+.checkout-form-container .primary-btn {
+  margin-top: 20px;
+  padding: 15px 12px;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+  /* Ensure it takes full width of the container */
+  width: 100%;
+  text-transform: uppercase;
+}
+
+/* Mobile Responsiveness (Ensures form remains readable) */
+@media (max-width: 650px) {
+  .checkout-form-container {
+    padding: 20px;
+    margin: 0 5%;
+  }
+}
+/* 7. Shop & E-commerce Styles: Navigation */
+
+.shop-main-nav {
+  /* Base styling to make it stand out below the main header */
+  background-color: var(--color-white);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+  padding: 10px 0;
+  border-bottom: 2px solid var(--color-secondary);
+}
+
+.shop-main-nav ul {
+  /* Flexbox to arrange links horizontally and center them */
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.shop-main-nav ul li a {
+  /* Style for individual links */
+  padding: 10px 15px;
+  margin: 0 5px;
+  color: var(--color-text-light);
+  font-weight: 500;
+  transition: color 0.3s, border-bottom 0.3s;
+  white-space: nowrap; /* Keeps links on one line */
+  display: inline-block;
+}
+
+.shop-main-nav ul li a:hover,
+.shop-main-nav ul li a.active {
+  /* Active and Hover States (Using our primary green theme) */
+  color: var(--color-primary);
+  border-bottom: 2px solid var(--color-primary);
+}
+
+/* Mobile Responsiveness for Shop Navigation (Hiding on small screens) */
+@media (max-width: 768px) {
+  .shop-main-nav {
+    /* Hiding the horizontal navigation on mobile to save screen space, 
+           as the vertical sidebar handles mobile navigation */
+    display: none;
+  }
+}
