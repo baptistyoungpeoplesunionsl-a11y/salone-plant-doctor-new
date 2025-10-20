@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Diagnosis Result - Salone Plant Doctor</title>
+    <link rel="stylesheet" href="../style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <a href="../index.html">Salone Plant Doctor</a>
+        <span>Salone Plant Doctor</span>
+      </div>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="#">Services</a></li>
+          <li><a href="shop.html">Shop</a></li>
+        </ul>
+      </nav>
+      <button class="auth-btn">Log In / Sign</button>
+    </header>
+
+    <main class="container diagnosis-page-container">
+      <div class="diagnosis-feature-box">
+        <h1>Diagnosis Complete</h1>
+        <p class="subtitle">
+          Your **Cassava** plant's health analysis is below. Plant identified
+          accurately.
+        </p>
+
+        <div class="scan-results-grid">
+          <div class="results-sidebar">
+            <i class="fas fa-microscope"></i>
+            <h2>Scan Result</h2>
+          </div>
+
+          <div class="results-content">
+            <img
+              id="result-photo-display"
+              src="../assets/placeholder-cassava-leaf.jpg"
+              alt="Scanned Cassava Leaf"
+            />
+
+            <div class="diagnosis-text status-unhealthy">
+              <h2>
+                <i class="fas fa-exclamation-triangle"></i> Diagnosis: **Cassava
+                Mosaic Disease (CMD)**
+              </h2>
+              <p>
+                **Confidence Level:**
+                <span class="confidence-high">High (99%)</span>
+              </p>
+              <p>
+                **Cause/Context:** This is a viral disease transmitted by the
+                whitefly. Symptoms include distorted, mosaic-patterned, and
+                yellowed leaves, severely impacting yield.
+              </p>
+            </div>
+
+            <div class="action-buttons" style="margin-bottom: 30px">
+              <button id="play-audio-krio-btn" class="secondary-btn">
+                <i class="fas fa-volume-up"></i> Listen in Krio
+              </button>
+              <button id="save-result-btn" class="secondary-btn">
+                <i class="fas fa-save"></i> Save Result
+              </button>
+            </div>
+
+            <div id="treatment-plan">
+              <h4>Recommended Treatment Plan</h4>
+              <ol>
+                <li>
+                  **Immediate Uprooting:** Remove and destroy all infected
+                  plants to prevent spread via whiteflies.
+                </li>
+                <li>
+                  **Resistant Varieties:** Replant only with certified
+                  CMD-resistant cassava stems.
+                </li>
+                <li>
+                  **Whitefly Control:** Apply appropriate insecticides in the
+                  initial planting stages to manage the vector population.
+                </li>
+              </ol>
+            </div>
+
+            <a href="shop.html" class="shop-cta-button primary-btn">
+              <i class="fas fa-shopping-cart"></i> Go to Shop for Supplies
+            </a>
+
+            <button
+              id="finish-scan-button"
+              class="secondary-btn"
+              onclick="window.location.href='diagnosis.html';"
+            >
+              <i class="fas fa-redo"></i> Start New Scan
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <p>&copy; Salone Plant Doctor | Privacy Policy | Terms of Service</p>
+    </footer>
+  </body>
+</html>

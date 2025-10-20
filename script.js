@@ -1,159 +1,57 @@
-// Get the main scan buttons
-const heroScanBtn = document.querySelector(".get-started-btn");
-const mainCtaBar = document.querySelector(".main-cta-bar");
-const mobileScanBtn = document.querySelector(".scan-diagnos-btn");
-
-/**
- * Function to handle the scan action (simulated camera/file upload)
- */
-function handleScanAction() {
-  alert(
-    "Initiating Plant Scan! A file upload dialog or camera access request would appear here to analyze your plant photo."
-  );
-  // In a production environment, this would trigger the AI model or API call.
-}
-
-// Add event listeners to all main scan entry points
-if (heroScanBtn) {
-  heroScanBtn.addEventListener("click", handleScanAction);
-}
-if (mainCtaBar) {
-  mainCtaBar.addEventListener("click", handleScanAction);
-}
-if (mobileScanBtn) {
-  mobileScanBtn.addEventListener("click", handleScanAction);
-}
-
-// --- Mobile Navigation Tab Simulation ---
-
-const navButtons = document.querySelectorAll("#mobile-nav button");
-
-navButtons.forEach((button) => {
-  button.addEventListener("click", (event) => {
-    // Handle the visual 'active' state
-    navButtons.forEach((btn) => btn.classList.remove("active"));
-    button.classList.add("active");
-
-    const targetView = button.getAttribute("data-target");
-    console.log(`Navigating to: ${targetView}`);
-
-    // Simulating the navigation by scrolling to the top (or to a specific section)
-    if (targetView !== "scan") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      // In a real SPA, we would load the content for 'home', 'history', etc.
-    } else {
-      // If 'scan', trigger the diagnosis function
-      handleScanAction();
-    }
-  });
-});
-// Function to add the green gradient hover effect to service cards
-function initServiceCardHovers() {
-  // 1. Select all service card links
-  const serviceCards = document.querySelectorAll(
-    ".service-cards-grid a.service-card"
-  );
-
-  // 2. Loop through each card and attach listeners
-  serviceCards.forEach((card) => {
-    // Add the class when the cursor enters the card
-    card.addEventListener("mouseover", function () {
-      // Use this.classList.add to target the specific card being hovered
-      this.classList.add("hover-gradient");
-    });
-
-    // Remove the class when the cursor leaves the card
-    card.addEventListener("mouseout", function () {
-      // Use this.classList.remove to target the specific card being hovered
-      this.classList.remove("hover-gradient");
-    });
-  });
-}
-
-// 3. Call the function when the page loads
-// This ensures the code runs only after all HTML elements are available
-document.addEventListener("DOMContentLoaded", initServiceCardHovers);
-// Function to add the green gradient hover effect to service cards
-function initServiceCardHovers() {
-  // Select all service card links
-  const serviceCards = document.querySelectorAll(
-    ".service-cards-grid a.service-card"
-  );
-
-  // Loop through each card and attach listeners
-  serviceCards.forEach((card) => {
-    // Add the class when the cursor enters the card
-    card.addEventListener("mouseover", function () {
-      this.classList.add("hover-gradient");
-    });
-
-    // Remove the class when the cursor leaves the card
-    card.addEventListener("mouseout", function () {
-      this.classList.remove("hover-gradient");
-    });
-  });
-}
-
-// Call the function when the page loads
-document.addEventListener("DOMContentLoaded", initServiceCardHovers);
-// FINAL_PROJECT/script.js
+// script.js
+// --- Salone Plant Doctor Frontend Logic ---
 
 // ----------------------------------------------------
-// 1. E-COMMERCE: Local Storage Cart Management
+// GLOBAL VARIABLE DECLARATIONS
 // ----------------------------------------------------
 
 const CART_STORAGE_KEY = "salonePlantDoctorCart";
+let videoStream = null;
 
-/**
- * Loads the current cart from Local Storage.
- * @returns {Array} The cart array or an empty array if none exists.
- */
+// --- Diagnosis DOM Element Selectors ---
+// Ensure these IDs exist in your diagnosis.html
+const startCameraButton = document.getElementById("start-camera-button"); // Open Camera button
+const uploadPhotoButton = document.getElementById("upload-photo-button"); // Upload Picture button
+const captureButton = document.getElementById("capture-button");
+const cameraFeed = document.getElementById("camera-feed"); // <video> element
+const cameraPlaceholder = document.getElementById("camera-placeholder"); // Placeholder text/div
+const fileUploadInput = document.getElementById("file-upload-input"); // Hidden <input type="file">
+const cameraContainer = document.getElementById("camera-container"); // Camera/Upload View
+const scanProcessing = document.getElementById("scan-processing"); // Processing View
+const resultCanvas = document.getElementById("result-canvas"); // <canvas> for image capture
+const finishScanButton = document.getElementById("finish-scan-button"); // For the results page
+// NOTE: I've removed selectors for scanResults, diagnosisText, treatmentPlan, etc.,
+// as those belong primarily to the script on result.html now.
+
+const API_ENDPOINT = "http://localhost:3000/diagnose";
+
+// ----------------------------------------------------
+// 1. E-COMMERCE: Local Storage Cart Management (Unchanged)
+// ----------------------------------------------------
+
 function loadCart() {
   const cartJson = localStorage.getItem(CART_STORAGE_KEY);
   return cartJson ? JSON.parse(cartJson) : [];
 }
 
-/**
- * Saves the current cart array to Local Storage.
- * @param {Array} cart - The cart array to save.
- */
 function saveCart(cart) {
   localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
   updateCartCount();
 }
 
-/**
- * Adds an item to the cart and redirects to checkout.
- * This is a simplified function for our manual OM checkout.
- * @param {string} name - Product name.
- * @param {number} price - Product price (in Leones).
- */
 function addItemToCartAndCheckout(name, price) {
-  // 1. Clear the old cart (since we only support one item per manual checkout for now)
   const cart = [{ name, price }];
-
-  // 2. Save the new cart
   saveCart(cart);
-
-  // 3. Alert user (for feedback) and redirect
-  alert(
-    `Added ${name} (Le ${price.toLocaleString()}) to cart. Redirecting to Checkout.`
-  );
   window.location.href = "./pages/checkout.html";
 }
 
 // ----------------------------------------------------
-// 2. UX: Dynamic Header & Mobile Nav Management
+// 2. UX: Dynamic Header & Mobile Nav Management (Unchanged)
 // ----------------------------------------------------
 
-/**
- * Updates the cart counter display in the header/mobile nav.
- */
 function updateCartCount() {
   const cart = loadCart();
   const count = cart.length;
-
-  // Assuming you have an element with the class '.cart-count' in your header/mobile nav
   const cartCounters = document.querySelectorAll(".cart-count");
   cartCounters.forEach((counter) => {
     counter.textContent = count;
@@ -161,67 +59,285 @@ function updateCartCount() {
   });
 }
 
+function initServiceCardHovers() {
+  const serviceCards = document.querySelectorAll(
+    ".service-cards-grid a.service-card"
+  );
+  serviceCards.forEach((card) => {
+    card.addEventListener("mouseover", function () {
+      this.classList.add("hover-gradient");
+    });
+    card.addEventListener("mouseout", function () {
+      this.classList.remove("hover-gradient");
+    });
+  });
+}
+
 // ----------------------------------------------------
-// 3. CHECKOUT PAGE LOGIC (pages/checkout.html)
+// 3. CHECKOUT PAGE LOGIC (pages/checkout.html) (Unchanged)
 // ----------------------------------------------------
 
-/**
- * Populates the order summary and calculates the total on the checkout page.
- */
 function displayCheckoutSummary() {
-  // Only run this function if we are on the checkout page
   if (!document.getElementById("display-total")) return;
 
   const cart = loadCart();
   if (cart.length === 0) {
-    // If the cart is empty, redirect them back to the shop
-    alert("Your cart is empty. Please add an item from the shop.");
-    window.location.href = "./shop.html";
     return;
   }
 
   const total = cart.reduce((sum, item) => sum + item.price, 0);
   const itemNames = cart.map((item) => item.name).join(", ");
 
-  // Update the visual display
   document.getElementById("display-total").textContent = total.toLocaleString();
   document
     .getElementById("order-summary")
     .querySelector("p:last-child").textContent = `(Items: ${itemNames})`;
+
+  document.getElementById("hidden-total").value = total;
+  document.getElementById("hidden-items").value = itemNames;
 }
 
 // ----------------------------------------------------
-// 4. Initialization
+// 4. AI DIAGNOSIS LOGIC (For pages/diagnosis.html)
 // ----------------------------------------------------
 
+/**
+ * Helper to show only one phase of the diagnosis process.
+ */
+function showPhase(phaseName) {
+  const phases = [cameraContainer, scanProcessing];
+  phases.forEach((phase) => {
+    if (phase) {
+      phase.style.display = phase.id === phaseName ? "flex" : "none";
+    }
+  });
+}
+
+// --- CORE CAMERA/UPLOAD LOGIC ---
+
+function stopCamera() {
+  if (videoStream) {
+    videoStream.getTracks().forEach((track) => track.stop());
+    videoStream = null;
+    if (cameraFeed) cameraFeed.srcObject = null;
+  }
+  if (cameraPlaceholder) cameraPlaceholder.style.display = "flex";
+  if (cameraFeed) cameraFeed.style.display = "none";
+  if (captureButton) captureButton.style.display = "none";
+}
+
+async function startCamera() {
+  try {
+    stopCamera();
+    const constraints = { video: { facingMode: "environment" } };
+    videoStream = await navigator.mediaDevices.getUserMedia(constraints);
+
+    if (cameraFeed) {
+      cameraFeed.srcObject = videoStream;
+      cameraFeed.style.display = "block";
+      cameraPlaceholder.style.display = "none";
+      captureButton.style.display = "block";
+      await cameraFeed.play();
+    }
+  } catch (err) {
+    console.error("Error accessing camera: ", err);
+    alert(
+      "Cannot access camera. Please check permissions or try uploading a photo."
+    );
+    stopCamera();
+  }
+}
+
+function capturePhoto() {
+  if (!videoStream || !resultCanvas) return;
+
+  resultCanvas.width = cameraFeed.videoWidth;
+  resultCanvas.height = cameraFeed.videoHeight;
+
+  const ctx = resultCanvas.getContext("2d");
+  ctx.drawImage(cameraFeed, 0, 0, resultCanvas.width, resultCanvas.height);
+
+  const imageDataURL = resultCanvas.toDataURL("image/jpeg");
+
+  stopCamera();
+
+  processDiagnosis(imageDataURL);
+}
+
+// --- Helper function to convert File object to Data URL string ---
+const fileToBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      resolve(reader.result);
+    };
+    reader.onerror = (error) => reject(error);
+  });
+};
+
+// --- FILE UPLOAD HANDLER (FIXED) ---
+
+async function handleFileUpload(event) {
+  const file = event.target.files[0];
+
+  if (file && file.type.startsWith("image/")) {
+    stopCamera();
+
+    try {
+      const imageDataURL = await fileToBase64(file);
+      processDiagnosis(imageDataURL);
+    } catch (e) {
+      console.error("Error reading file:", e);
+      alert("Error reading file. Please try a different image.");
+    }
+  } else if (file) {
+    alert("Please upload a valid image file.");
+  }
+
+  // CRITICAL FIX: Reset file input value to allow the 'change' event to fire reliably on the next click.
+  if (event.target) {
+    event.target.value = null;
+  }
+}
+
+// --- API CONNECTION AND RESULT REDIRECTION ---
+
+/**
+ * Initiates the diagnosis process by sending Data URL to the backend.
+ */
+function processDiagnosis(imageDataURL) {
+  showPhase("scan-processing");
+  localStorage.setItem("scannedImageURL", imageDataURL);
+
+  callGeminiApi(imageDataURL);
+}
+
+async function callGeminiApi(imageDataURL) {
+  const userPrompt =
+    "Analyze this image of a plant leaf or part. Provide a clear, concise diagnosis, cause, confidence, and treatment plan for a local farmer in Sierra Leone.";
+
+  try {
+    const response = await fetch(API_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        imageDataURL: imageDataURL,
+        prompt: userPrompt,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response
+        .json()
+        .catch(() => ({ error: "Server error: Check Node.js console" }));
+      throw new Error(
+        `Server Status Error: ${response.status} - ${
+          errorData.error || "Unknown server issue"
+        }`
+      );
+    }
+
+    const data = await response.json();
+
+    // Store the structured diagnosis result and redirect
+    localStorage.setItem("diagnosisResult", JSON.stringify(data));
+    window.location.href = "result.html";
+  } catch (error) {
+    console.error("Diagnosis Failed:", error);
+
+    // ERROR FALLBACK: Store error and redirect
+    const errorData = {
+      plant_name: "Diagnosis Failed",
+      health_status: "Error",
+      disease: "Connection/API Failure",
+      confidence: "Low",
+      cause: `The server or AI connection failed. Check your Node.js console. (Error: ${error.message})`,
+      treatment_steps: [
+        "Ensure server is running",
+        "Check API key",
+        "Try again",
+      ],
+      recommendation_summary:
+        "Please check your system configuration immediately.",
+      status_class: "status-unhealthy",
+    };
+    localStorage.setItem("diagnosisResult", JSON.stringify(errorData));
+    window.location.href = "result.html";
+  }
+}
+
+// ----------------------------------------------------
+// 5. Initialisation and Event Listeners (CONSOLIDATED)
+// ----------------------------------------------------
+
+function initializeScanFeature() {
+  // Initial State: Show default camera container
+  showPhase("camera-container");
+  stopCamera();
+
+  // A. Start Camera Button Listener
+  if (startCameraButton) {
+    startCameraButton.addEventListener("click", startCamera);
+  }
+
+  // B. Capture Button Listener
+  if (captureButton) {
+    captureButton.addEventListener("click", capturePhoto);
+  }
+
+  // C. Upload Photo Button (Triggers the hidden file input)
+  if (uploadPhotoButton) {
+    uploadPhotoButton.addEventListener("click", () => {
+      if (fileUploadInput) {
+        fileUploadInput.click();
+      }
+    });
+  }
+
+  // D. File Input Change Listener
+  if (fileUploadInput) {
+    fileUploadInput.addEventListener("change", handleFileUpload);
+  }
+
+  // E. Finish Scan Button (For use on the result.html if needed)
+  if (finishScanButton) {
+    finishScanButton.addEventListener("click", () => {
+      // Assuming this redirects back to diagnosis.html
+      window.location.href = "diagnosis.html";
+    });
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-  // Update the cart count on every page load
+  // General UX
   updateCartCount();
+  initServiceCardHovers();
 
-  // Initialize checkout summary (only runs on checkout.html)
-  displayCheckoutSummary();
-
-  // Attach click listeners to all "Buy Now" buttons on the shop page
+  // E-commerce: Attach click listeners to all "Buy Now" buttons
   document
     .querySelectorAll(".product-card .add-to-cart-btn")
     .forEach((button) => {
       button.addEventListener("click", (event) => {
-        // Prevent the default button action
         event.preventDefault();
+        const name = button.dataset.name;
+        const price = parseInt(button.dataset.price);
 
-        // Navigate up to the product card container
-        const card = event.target.closest(".product-card");
-
-        // Safely retrieve product details from the card
-        const name = card.querySelector(".product-name").textContent;
-        // Extract the price, assuming the format "Le 45,000"
-        const priceText = card.querySelector(".product-price").textContent;
-        const price = parseInt(
-          priceText.replace("Le", "").replace(/,/g, "").trim()
-        );
-
-        // Add the item and redirect
-        addItemToCartAndCheckout(name, price);
+        if (name && !isNaN(price)) {
+          addItemToCartAndCheckout(name, price);
+        } else {
+          console.error("Missing data attributes on Buy Now button.");
+          alert("Error: Product data missing. Cannot add to cart.");
+        }
       });
     });
+
+  // Checkout Page
+  displayCheckoutSummary();
+
+  // Diagnosis Page: Initialize the core scan features
+  // Check for the presence of diagnosis elements before initializing
+  if (cameraContainer) {
+    initializeScanFeature();
+  }
 });

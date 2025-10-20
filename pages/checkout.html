@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Checkout - Salone Plant Doctor</title>
+    <link rel="stylesheet" href="../style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <a href="../index.html">Salone Plant Doctor</a>
+        <span>Salone Plant Doctor</span>
+      </div>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="#">Services</a></li>
+          <li><a href="../pages/shop.html">Shop</a></li>
+          <li><a href="#" class="auth-btn">Log In / Sign</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="checkout-page-container">
+      <section class="checkout-summary">
+        <h1>Order Summary</h1>
+        <div id="order-summary" class="summary-box">
+          <p>
+            Total Cost (Le):
+            <span class="total-amount" id="display-total">0</span>
+          </p>
+          <p class="item-details-text">(Item: Loading...)</p>
+        </div>
+        <p>
+          Please complete the form below to finalize your order. Payment is
+          Cash-on-Delivery or Orange Money Transfer upon delivery.
+        </p>
+      </section>
+
+      <section class="checkout-form-section">
+        <h2>Delivery & Payment Details</h2>
+
+        <form
+          id="orange-money-order-form"
+          action="https://script.google.com/macros/s/AKfycby3dm5XkiiO58MT0ngZumYsbZ0zAcnJszcRLAebSKFY11RKoJqHO7Y7MgsmUBwpgI-6/exec"
+          method="POST"
+        >
+          <fieldset>
+            <legend>Contact Information</legend>
+            <div class="form-group">
+              <label for="customer_name">Full Name</label>
+              <input
+                type="text"
+                id="customer_name"
+                name="customer_name"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="contact_phone">Contact Phone Number</label>
+              <input
+                type="tel"
+                id="contact_phone"
+                name="contact_phone"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="delivery_address"
+                >Full Delivery Address (Area, Street, House No.)</label
+              >
+              <textarea
+                id="delivery_address"
+                name="delivery_address"
+                required
+              ></textarea>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Orange Money Transaction</legend>
+            <p class="info-text">
+              If you have pre-paid, enter the details below. Otherwise, payment
+              will be collected on delivery.
+            </p>
+            <div class="form-group">
+              <label for="om_registered_name"
+                >Orange Money Registered Name</label
+              >
+              <input
+                type="text"
+                id="om_registered_name"
+                name="om_registered_name"
+              />
+            </div>
+            <div class="form-group">
+              <label for="om_transaction_id"
+                >Orange Money Transaction ID (Optional)</label
+              >
+              <input
+                type="text"
+                id="om_transaction_id"
+                name="om_transaction_id"
+              />
+            </div>
+          </fieldset>
+
+          <input
+            type="hidden"
+            id="hidden-order-total"
+            name="order_total"
+            value=""
+          />
+          <input
+            type="hidden"
+            id="hidden-item-details"
+            name="item_details"
+            value=""
+          />
+
+          <button type="submit" class="primary-btn submit-btn">
+            <i class="fas fa-check-circle"></i> Submit Order
+          </button>
+        </form>
+      </section>
+    </main>
+
+    <footer></footer>
+
+    <script src="../script.js"></script>
+  </body>
+</html>
