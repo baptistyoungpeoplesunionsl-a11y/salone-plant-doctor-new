@@ -6,10 +6,7 @@ const express = require("express");
 const cors = require("cors");
 const { GoogleGenAI } = require("@google/genai");
 const bodyParser = require("body-parser");
-const dotenv = require("dotenv");
-
-// Load environment variables from .env file (for local development)
-dotenv.config();
+require("dotenv").config(); // Load environment variables from .env file immediately
 
 // 2. Initialize Express app and set port
 const app = express();
@@ -26,8 +23,9 @@ if (!apiKey) {
   process.exit(1);
 }
 
-// Initialize the GoogleGenAI client
-const ai = new new GoogleGenAI({ apiKey })();
+// CORRECTION IS HERE: Initializing the GoogleGenAI client
+// Removed the extra 'new' and the trailing '()'
+const ai = new GoogleGenAI({ apiKey });
 
 // 4. Configure Middleware
 // Use CORS to allow requests from your local front-end
@@ -45,15 +43,12 @@ app.post("/diagnose", async (req, res) => {
     if (!imageDataURL || !prompt) {
       console.error("Missing required fields: imageDataURL or prompt.");
       return res.status(400).json({ error: "Missing image data or prompt." });
-    }
+    } // Log receipt of the request for debugging
 
-    // Log receipt of the request for debugging
     console.log(
       `[SERVER] Processing new request. Data URL length: ${imageDataURL.length}.`
-    );
+    ); // Helper to convert the Data URL string (e.g., data:image/jpeg;base64,...) // to the expected Part format for the Gemini API.
 
-    // Helper to convert the Data URL string (e.g., data:image/jpeg;base64,...)
-    // to the expected Part format for the Gemini API.
     const [mimeTypePart, base64Data] = imageDataURL.split(";base64,");
     const mimeType = mimeTypePart.replace("data:", "");
 
@@ -62,9 +57,8 @@ app.post("/diagnose", async (req, res) => {
         data: base64Data,
         mimeType: mimeType,
       },
-    };
+    }; // --- Structured Output Configuration (JSON Mode) ---
 
-    // --- Structured Output Configuration (JSON Mode) ---
     const systemInstruction =
       "You are the 'Salone Plant Doctor' expert. Your sole purpose is to analyze the user-provided image of a plant and provide a highly concise, structured diagnosis and treatment plan tailored for easy comprehension by a local farmer in Sierra Leone. Focus only on Tomato, Cassava, and Lettuce diagnosis.";
 
@@ -125,9 +119,8 @@ app.post("/diagnose", async (req, res) => {
         "recommendation_summary",
         "status_class",
       ],
-    };
+    }; // Call the Gemini API with JSON Mode and Structured Schema
 
-    // Call the Gemini API with JSON Mode and Structured Schema
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
       contents: [{ role: "user", parts: [imagePart, { text: prompt }] }],
@@ -136,17 +129,14 @@ app.post("/diagnose", async (req, res) => {
         responseMimeType: "application/json",
         responseSchema: responseSchema,
       },
-    });
+    }); // The response.text is guaranteed to be a valid JSON string in JSON Mode
 
-    // The response.text is guaranteed to be a valid JSON string in JSON Mode
-    const diagnosisData = JSON.parse(response.text);
+    const diagnosisData = JSON.parse(response.text); // Send the clean, structured JSON response back to the front-end
 
-    // Send the clean, structured JSON response back to the front-end
     res.status(200).json(diagnosisData);
   } catch (error) {
-    console.error("Error during Gemini API call:", error.message);
+    console.error("Error during Gemini API call:", error.message); // Return a generic error to the frontend
 
-    // Return a generic error to the frontend
     res.status(500).json({
       error:
         "Internal server error while processing diagnosis. Check API key, quota, or network details.",

@@ -1,83 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI Diagnosis - Salone Plant Doctor</title>
-    <link rel="stylesheet" href="../style.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-    />
-  </head>
-  <body>
-    <header>
-      <div class="logo">
-        <a href="../index.html">Back</a>
-        <span>Salone Plant Doctor</span>
-      </div>
-      <nav class="main-nav">
-        <ul>
-          <li><a href="../index.html">Home</a></li>
-          <li><a href="#">Services</a></li>
-          <li><a href="shop.html">Shop</a></li>
-      </nav>
-      <button class="auth-btn">Log In / Sign</button>
-    </header>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Diagnosis - Salone Plant Doctor</title>
+    <link rel="stylesheet" href="../style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <a href="../index.html">Back</a>
+        <span>Salone Plant Doctor</span>
+      </div>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="#">Services</a></li>
+          <li><a href="shop.html">Shop</a></li>
+      </nav>
+      <button class="auth-btn">Log In / Sign</button>
+    </header>
 
-    <main class="diagnosis-page-container container">
-      <div class="diagnosis-feature-box">
-        <h1>AI Plant Diagnosis</h1>
-        <p class="subtitle">
-          Use your camera or upload a picture of the symptomatic area of your
-          plant's leaf.
-        </p>
+    <main class="diagnosis-page-container container">
+      <div class="diagnosis-feature-box">
+        <h1>AI Plant Diagnosis</h1>
+        <p class="subtitle">
+          Use your camera or upload a picture of the symptomatic area of your
+          plant's leaf.
+        </p>
 
-        <div id="camera-container">
-          <video
-            id="camera-feed"
-            autoplay
-            playsinline
-            style="display: none"
-          ></video>
+        <div id="camera-container">
+            <canvas id="result-canvas" style="display: none;"></canvas>
+                      <video
+            id="camera-feed"
+            autoplay
+            playsinline
+            style="display: none"
+          ></video>
 
-          <input
-            type="file"
-            id="file-upload-input"
-            accept="image/*"
-            style="display: none"
-          />
+            <div id="camera-placeholder" style="
+                display: flex; 
+                justify-content: center; 
+                align-items: center; 
+                height: 200px; 
+                border: 2px dashed var(--color-text-light);
+                border-radius: var(--border-radius);
+                color: var(--color-text-light);
+                font-size: 1.1rem;
+                margin-bottom: 15px;
+                ">
+                Ready to scan!
+            </div>
+                      <input
+            type="file"
+            id="file-upload-input"
+            accept="image/*"
+            style="display: none"
+          />
 
-          <div class="action-buttons">
-            <button id="start-camera-button" class="secondary-btn">
-              <i class="fas fa-video"></i> Open Camera
-            </button>
-            <button id="upload-photo-button" class="secondary-btn">
-              <i class="fas fa-upload"></i> Upload Picture
-            </button>
-          </div>
+          <div class="action-buttons">
+            <button id="start-camera-button" class="secondary-btn">
+              <i class="fas fa-video"></i> Open Camera
+            </button>
+            <button id="upload-photo-button" class="secondary-btn">
+              <i class="fas fa-upload"></i> Upload Picture
+            </button>
+          </div>
 
-          <button
-            id="capture-button"
-            class="primary-btn capture-btn"
-            style="display: none"
-          >
-            <i class="fas fa-circle"></i> Capture Photo
-          </button>
-        </div>
+          <button
+            id="capture-button"
+            class="primary-btn capture-btn"
+            style="display: none"
+          >
+            <i class="fas fa-circle"></i> Capture Photo
+          </button>
+        </div>
 
-        <div id="scan-processing" style="display: none">
-          <div class="loader"></div>
-          <h3>Scanning by API & Gemini 2.5 Flash...</h3>
-          <p>Please wait, analyzing plant symptoms...</p>
-        </div>
-      </div>
-    </main>
+        <div id="scan-processing" style="display: none">
+          <div class="loader"></div>
+          <h3>Please wait, Salone Plant Doctor is scanning...</h3>
+        </div>
+      </div>
+    </main>
 
-    <footer>
-      <p>&copy; Salone Plant Doctor | Privacy Policy | Terms of Service</p>
-    </footer>
+    <footer>
+      <p>&copy; Salone Plant Doctor | Privacy Policy | Terms of Service</p>
+    </footer>
 
-    <script src="../script.js"></script>
-  </body>
+    <script src="../script.js"></script>
+  </body>
 </html>

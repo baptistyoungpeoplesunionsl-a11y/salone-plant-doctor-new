@@ -1,113 +1,299 @@
 <!DOCTYPE html>
 <html lang="en">
+       
   <head>
+               
     <meta charset="UTF-8" />
+               
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+               
     <title>Diagnosis Result - Salone Plant Doctor</title>
+               
     <link rel="stylesheet" href="../style.css" />
+               
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
     />
+           
   </head>
+       
   <body>
+               
     <header>
+                       
       <div class="logo">
-        <a href="../index.html">Salone Plant Doctor</a>
-        <span>Salone Plant Doctor</span>
+                        <a href="../index.html">Back</a>                
+        <span>Salone Plant Doctor</span>            
       </div>
+                       
       <nav class="main-nav">
+                               
         <ul>
+                                       
           <li><a href="../index.html">Home</a></li>
+                                       
           <li><a href="#">Services</a></li>
+                                       
           <li><a href="shop.html">Shop</a></li>
+                                   
         </ul>
+                           
       </nav>
-      <button class="auth-btn">Log In / Sign</button>
+                  <button class="auth-btn">Log In / Sign</button>        
     </header>
 
+               
     <main class="container diagnosis-page-container">
+           
       <div class="diagnosis-feature-box">
+                               
         <h1>Diagnosis Complete</h1>
+                               
         <p class="subtitle">
-          Your **Cassava** plant's health analysis is below. Plant identified
-          accurately.
+                   
+          <strong id="diagnosis-plant-name"
+            >Plant identified accurately.</strong
+          >
+                                   
         </p>
 
+                               
         <div class="scan-results-grid">
+                                       
           <div class="results-sidebar">
-            <i class="fas fa-microscope"></i>
+                                    <i class="fas fa-microscope"></i>          
+                         
             <h2>Scan Result</h2>
+                                           
           </div>
 
+                                       
           <div class="results-content">
-            <img
-              id="result-photo-display"
-              src="../assets/placeholder-cassava-leaf.jpg"
-              alt="Scanned Cassava Leaf"
-            />
-
-            <div class="diagnosis-text status-unhealthy">
-              <h2>
-                <i class="fas fa-exclamation-triangle"></i> Diagnosis: **Cassava
-                Mosaic Disease (CMD)**
-              </h2>
-              <p>
-                **Confidence Level:**
-                <span class="confidence-high">High (99%)</span>
-              </p>
-              <p>
-                **Cause/Context:** This is a viral disease transmitted by the
-                whitefly. Symptoms include distorted, mosaic-patterned, and
-                yellowed leaves, severely impacting yield.
-              </p>
+                                                           
+            <div id="result-photo-display" class="scanned-image-container">
+                                                       
+              <img
+                src="../assets/placeholder-cassava-leaf.jpg"
+                alt="Scanned Plant Leaf"
+              />
+                                                   
             </div>
 
+                                                           
+            <div id="status-header" class="diagnosis-text">
+                                                       
+              <h2 id="diagnosis-health-status">Loading Diagnosis...</h2>
+                                                                     
+              <p id="diagnosis-issue">Loading specific issue...</p>
+                                                       
+              <p id="diagnosis-confidence">Loading confidence level...</p>
+                                                   
+            </div>
+
+                                               
+            <div class="diagnosis-detail-section">
+                                                       
+              <h4>Why is this happening? (Cause)</h4>
+                                                       
+              <p id="diagnosis-cause">Loading cause...</p>
+                                                   
+            </div>
+
+                                               
+            <div class="recommendation-box">
+                                                       
+              <h4>🌱 Farmer Summary (What to Do)</h4>
+                                                       
+              <p id="recommendation-summary">Loading summary...</p>
+                                                   
+            </div>
+
+                                               
             <div class="action-buttons" style="margin-bottom: 30px">
+                                                       
               <button id="play-audio-krio-btn" class="secondary-btn">
-                <i class="fas fa-volume-up"></i> Listen in Krio
+                                               
+                <i class="fas fa-volume-up"></i> Listen in Krio                
+                                           
               </button>
+                                                       
               <button id="save-result-btn" class="secondary-btn">
-                <i class="fas fa-save"></i> Save Result
+                                                <i class="fas fa-save"></i> Save
+                Result                                            
               </button>
+                                                   
             </div>
 
+                                               
             <div id="treatment-plan">
+                                                       
               <h4>Recommended Treatment Plan</h4>
-              <ol>
-                <li>
-                  **Immediate Uprooting:** Remove and destroy all infected
-                  plants to prevent spread via whiteflies.
-                </li>
-                <li>
-                  **Resistant Varieties:** Replant only with certified
-                  CMD-resistant cassava stems.
-                </li>
-                <li>
-                  **Whitefly Control:** Apply appropriate insecticides in the
-                  initial planting stages to manage the vector population.
-                </li>
+                                                       
+              <ol id="treatment-plan-list">
+                                                               
+                <li>Loading treatment steps...</li>
+                                                           
               </ol>
+                                                   
             </div>
 
-            <a href="shop.html" class="shop-cta-button primary-btn">
-              <i class="fas fa-shopping-cart"></i> Go to Shop for Supplies
-            </a>
+                       
+            <div class="result-action-buttons">
+              <a href="shop.html" class="primary-btn">
+                                    <i class="fas fa-shopping-cart"></i> Go to
+                Shop for Supplies                            
+              </a>
 
-            <button
-              id="finish-scan-button"
-              class="secondary-btn"
-              onclick="window.location.href='diagnosis.html';"
-            >
-              <i class="fas fa-redo"></i> Start New Scan
-            </button>
+                             
+              <button
+                id="finish-scan-button"
+                class="secondary-btn"
+                onclick="window.location.href='diagnosis.html';"
+              >
+                                    <i class="fas fa-redo"></i> Start New Scan  
+                                       
+              </button>
+                         
+            </div>
+                     
           </div>
+                                   
         </div>
+                           
       </div>
+                   
     </main>
 
+               
     <footer>
+                       
       <p>&copy; Salone Plant Doctor | Privacy Policy | Terms of Service</p>
+                   
     </footer>
+
+               
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // 1. Retrieve data from Local Storage
+        const resultDataJson = localStorage.getItem("diagnosisResult");
+        const scannedImageURL = localStorage.getItem("scannedImageURL"); // --- DOM Elements to Populate ---
+
+        const resultPhotoDisplay = document.getElementById(
+          "result-photo-display"
+        ); // The status-header div now uses the 'diagnosis-text' class by default, // and the dynamic status class is added in the styling section (A).
+        const statusHeader = document.getElementById("status-header");
+        const diagnosisHealthStatus = document.getElementById(
+          "diagnosis-health-status"
+        );
+        const diagnosisPlantName = document.getElementById(
+          "diagnosis-plant-name"
+        );
+        const diagnosisIssue = document.getElementById("diagnosis-issue");
+        const diagnosisConfidence = document.getElementById(
+          "diagnosis-confidence"
+        );
+        const diagnosisCause = document.getElementById("diagnosis-cause");
+        const recommendationSummary = document.getElementById(
+          "recommendation-summary"
+        );
+        const treatmentPlanList = document.getElementById(
+          "treatment-plan-list"
+        );
+
+        if (!resultDataJson) {
+          console.error(
+            "No diagnosis data found in localStorage. Redirecting to input."
+          ); // Fallback: If no data, send the user back to diagnosis page
+          window.location.href = "diagnosis.html";
+          return;
+        }
+
+        const data = JSON.parse(resultDataJson); // ---------------------------------------------------- // A. Image Display and Page Styling // ---------------------------------------------------- // Display the image that was scanned
+
+        if (resultPhotoDisplay && scannedImageURL) {
+          // Replaces the placeholder image with the scanned image
+          resultPhotoDisplay.innerHTML = `<img src="${scannedImageURL}" alt="Scanned Plant Photo">`;
+        } // Apply the correct CSS class (status-healthy or status-unhealthy)
+
+        if (statusHeader && data.status_class) {
+          // Ensure it keeps the base 'diagnosis-text' class
+          statusHeader.className = `diagnosis-text ${data.status_class}`;
+        } // ---------------------------------------------------- // B. Diagnosis Summary Hydration // ---------------------------------------------------- // Plant Name (e.g., Plant Identified: Cassava)
+
+        if (diagnosisPlantName) {
+          diagnosisPlantName.innerHTML = `Plant Identified: <strong>${
+            data.plant_name || "Unknown"
+          }</strong>`;
+        } // Status Header Content (Health Status and Disease Name)
+
+        if (diagnosisHealthStatus) {
+          const statusIcon =
+            data.health_status === "Healthy"
+              ? '<i class="fas fa-check-circle"></i>'
+              : '<i class="fas fa-exclamation-triangle"></i>'; // Use the disease name/status in the main header
+          diagnosisHealthStatus.innerHTML = `${statusIcon} Diagnosis: <strong>${
+            data.disease || data.health_status
+          }</strong>`;
+        } // Detailed Diagnosis Fields
+
+        if (diagnosisIssue) {
+          // Display Health Status clearly right below the main diagnosis
+          diagnosisIssue.innerHTML = `<strong>Health Status:</strong> <span class="${
+            data.status_class || ""
+          }">${data.health_status || "N/A"}</span>`;
+        }
+        if (diagnosisConfidence) {
+          // Use the confidence name to apply CSS (e.g., confidence-high)
+          const confidenceClass = `confidence-${(
+            data.confidence || "low"
+          ).toLowerCase()}`;
+          diagnosisConfidence.innerHTML = `<strong>Confidence:</strong> <span class="${confidenceClass}">${
+            data.confidence || "N/A"
+          }</span>`;
+        }
+        if (diagnosisCause) {
+          diagnosisCause.innerHTML =
+            data.cause || "No specific cause provided.";
+        } // Farmer Summary
+
+        if (recommendationSummary) {
+          recommendationSummary.textContent =
+            data.recommendation_summary || "Please consult an expert.";
+        } // ---------------------------------------------------- // C. Treatment Steps // ----------------------------------------------------
+
+        if (treatmentPlanList) {
+          treatmentPlanList.innerHTML = ""; // Clear hardcoded steps
+          const steps = data.treatment_steps || [];
+
+          if (steps.length === 0) {
+            const li = document.createElement("li");
+            li.textContent = "No specific actions recommended at this time.";
+            treatmentPlanList.appendChild(li);
+          } else {
+            steps.forEach((step) => {
+              const li = document.createElement("li");
+              li.textContent = step;
+              treatmentPlanList.appendChild(li);
+            });
+          }
+        } // --- Action Button Listeners ---
+
+        const playAudioBtn = document.getElementById("play-audio-krio-btn");
+        if (playAudioBtn) {
+          playAudioBtn.addEventListener("click", () => {
+            alert("Krio Audio Playback feature coming soon!");
+          });
+        }
+
+        const saveResultBtn = document.getElementById("save-result-btn");
+        if (saveResultBtn) {
+          saveResultBtn.addEventListener("click", () => {
+            alert("Saving feature coming soon!");
+          });
+        }
+      });
+    </script>
+           
   </body>
 </html>

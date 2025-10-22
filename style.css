@@ -558,266 +558,129 @@ footer {
 }
 
 /* 8. Form & Checkout Styles (No changes needed) */
-/* ... checkout styles ... */
+/* ==================================== */
+/* 9. AI Diagnosis Page Styles (diagnosis.html) */
+/* ==================================== */
 
-/* ================================================= */
-/* 9. AI DIAGNOSIS PAGE STYLING (FOR diagnosis.html) */
-/* ================================================= */
-
-/* MAIN PAGE LAYOUT */
 .diagnosis-page-container {
-  padding-top: 50px;
-  padding-bottom: 80px;
-  min-height: 80vh;
+  /* Uses .container max-width but overrides padding for diagnosis */
+  padding: 40px 5%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 70vh;
 }
 
 .diagnosis-feature-box {
   background-color: var(--color-white);
   padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  max-width: 900px; /* Increased max-width for better result display */
-  margin: 20px auto;
-  /* Resetting text-align to left for result text readability */
-  text-align: left;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
 }
 
 .diagnosis-feature-box h1 {
   color: var(--color-primary);
-  margin-bottom: 5px;
   font-size: 1.8rem;
-  font-weight: 700;
-  text-align: center; /* Title should still be centered on the initial page */
+  margin-bottom: 5px;
 }
 
-.diagnosis-feature-box .subtitle {
+.subtitle {
   color: var(--color-text-light);
   margin-bottom: 30px;
-  font-size: 0.95rem;
-  text-align: center;
+  font-size: 1rem;
 }
 
-/* --- MODIFIED CODE FOR COMPACT BUTTONS (Desktop/Tablet) --- */
+#camera-container {
+  /* Main wrapper for camera/upload elements */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Styles for the main visual area: video feed and placeholder */
+#camera-feed,
+#camera-placeholder {
+  width: 100%;
+  max-width: 400px;
+  height: 300px; /* Fixed height for consistent layout */
+  border: 3px solid var(--color-primary);
+  border-radius: var(--border-radius);
+  object-fit: cover;
+  margin-bottom: 5px;
+}
+
+#camera-placeholder {
+  /* Style for the placeholder box (when camera is off) */
+  display: flex; /* Overridden by JS, but good default */
+  justify-content: center;
+  align-items: center;
+  border: 2px dashed var(--color-text-light);
+  color: var(--color-text-light);
+  font-size: 1.1rem;
+  cursor: default;
+}
+
+/* Action Buttons below the camera feed */
 .action-buttons {
   display: flex;
-  gap: 400px;
   justify-content: center;
-  margin-bottom: 40px;
+  gap: 15px;
+  width: 100%;
+  max-width: 450px;
 }
 
 .action-buttons .secondary-btn {
-  /* Make buttons compact and flexible side-by-side */
-  width: 200px; /* Set a consistent, compact width */
-  padding: 15px 25px; /* Smaller padding */
-  font-size: 1rem; /* Smaller font size */
-  font-weight: 600;
-  /* Use the standard 8px radius, which overrides the generic 50px button radius */
-  border-radius: 8px;
-  /* Important: Reset the global border-radius of 50px defined in the 'button' selector, 
-     as it was conflicting with .secondary-btn's 8px radius. */
-}
-/* ----------------------------------------------------------- */
-
-.capture-btn {
-  display: block;
-  width: 200px;
-  margin: 0 auto;
-  background-color: var(--color-primary);
-  color: var(--color-white);
-  padding: 15px 30px;
-  font-size: 1.1rem;
-  border-radius: 50px;
-  box-shadow: 0 4px 10px rgba(56, 142, 60, 0.4);
-}
-
-/* --- Results Phase Styling (Two-Column Layout) --- */
-
-/* Scanned Image Display */
-#result-photo-display {
-  width: 100%;
-  max-width: 100%;
-  height: 250px;
-  border-radius: var(--border-radius);
-  overflow: hidden;
-  box-shadow: var(--shadow-light);
-  margin-bottom: 30px;
-}
-
-/* New Grid Layout for the results page */
-.scan-results-grid {
-  display: grid;
-  grid-template-columns: 200px 1fr; /* Fixed sidebar width, flexible content */
-  gap: 30px;
-  padding: 0;
-}
-
-/* 1. Sidebar for "Scan Result" Text */
-.results-sidebar {
-  text-align: center;
-  padding-top: 10px;
-}
-
-.results-sidebar h2 {
-  font-size: 1.8rem;
-  font-weight: 600;
-  color: var(--color-primary);
-  line-height: 1.1;
-  margin-bottom: 0;
-}
-
-.results-sidebar i {
-  font-size: 2.5rem;
-  color: var(--color-primary);
-  display: block;
-  margin-bottom: 5px;
-}
-
-/* 2. Main Content Area for Diagnosis Details */
-.results-content {
-  /* Main area for diagnosis, cause, and treatment */
-}
-
-/* Diagnosis Summary Box */
-.diagnosis-text {
-  /* Box for the diagnosis and confidence */
-  padding: 20px;
-  border-radius: var(--border-radius);
-  margin-bottom: 30px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  border: 1px solid transparent;
-}
-
-/* Health Status H2 (Specific colors based on outcome) */
-.diagnosis-text h2 {
-  font-size: 1.4rem;
-  font-weight: 700;
-  margin-bottom: 10px;
-  padding: 0; /* Remove padding from general H2 style */
-  text-align: left;
-  text-transform: none;
-  line-height: 1.4;
-}
-
-.status-healthy {
-  background-color: var(--color-status-healthy-bg);
-  border-color: var(--color-success);
-  color: var(--color-text);
-}
-
-.status-unhealthy {
-  background-color: var(--color-status-unhealthy-bg);
-  border-color: var(--color-error);
-  color: var(--color-text);
-}
-
-/* Confidence and Cause/Context Styling */
-.diagnosis-text p {
-  margin-bottom: 10px;
+  flex-grow: 1;
   font-size: 0.95rem;
-  line-height: 1.5;
-  padding-left: 0;
-  border-left: none;
-}
-
-.confidence-high {
-  font-weight: bold;
-  color: var(--color-success);
-}
-.confidence-medium {
-  font-weight: bold;
-  color: var(--color-warning);
-}
-.confidence-low {
-  font-weight: bold;
-  color: var(--color-error);
-}
-
-/* Recommended Treatment Section Title */
-.results-content h4 {
-  color: var(--color-primary);
-  border-bottom: 2px solid var(--color-secondary);
-  padding-bottom: 10px;
-  margin-top: 30px;
-  margin-bottom: 15px;
-  font-size: 1.3rem;
-}
-
-/* Treatment Plan List (Style remains clean) */
-#treatment-plan ol,
-#treatment-plan ul {
-  list-style-type: none;
-  padding-left: 0;
-}
-
-#treatment-plan li {
-  background-color: #f7fcf5;
-  border-left: 4px solid var(--color-primary);
-  padding: 12px;
-  margin-bottom: 10px;
-  border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  font-size: 0.95rem;
-}
-
-/* Shop CTA Button */
-.shop-cta-button {
-  display: block;
-  width: 100%;
-  margin-top: 30px;
-  padding: 15px;
-  background-color: var(--color-primary);
-  color: var(--color-white);
-  border-radius: 10px;
-  font-size: 1.1em;
-  font-weight: 700;
-  transition: background-color 0.3s, transform 0.3s;
-  box-shadow: 0 4px 12px rgba(56, 142, 60, 0.5);
-}
-
-.shop-cta-button:hover {
-  background-color: var(--color-primary-dark);
-  transform: translateY(-2px);
-}
-
-/* Start New Scan Button */
-#finish-scan-button {
-  margin-top: 30px;
-  width: 100%;
-  border-radius: 8px;
-}
-/* --- Loading Screen Styles (for #scan-processing) --- */
-#scan-processing {
-  /* Ensure it is centered and takes full space within the diagnosis box */
-  height: 350px; /* Match height of camera placeholder */
-  flex-direction: column;
-  justify-content: center;
+  display: flex;
+  flex-direction: row;
   align-items: center;
-  text-align: center;
-  background-color: var(--color-secondary);
-  border-radius: var(--border-radius);
+  justify-content: center;
+  gap: 10px;
+}
+
+#capture-button {
+  width: 100%;
+  max-width: 450px;
+  margin-top: 10px;
+}
+
+/* Scan Processing Loading State */
+#scan-processing {
+  background-color: var(--color-primary-dark);
+  color: var(--color-white);
   padding: 30px;
+  border-radius: var(--border-radius);
+  margin-top: 40px;
+  text-align: center;
+  /* This will be shown by script.js when diagnosis starts */
 }
 
 #scan-processing h3 {
-  margin-top: 20px;
-  color: var(--color-primary);
-  font-size: 1.5rem;
+  color: var(--color-white);
+  font-weight: 500;
+  font-size: 1.2rem;
+  margin: 15px 0 5px 0;
 }
 
 #scan-processing p {
-  color: var(--color-text-light);
+  color: rgba(255, 255, 255, 0.9);
   font-size: 1rem;
-  margin-bottom: 30px;
+  margin: 0;
 }
 
-/* Loader Animation */
 .loader {
-  border: 6px solid #f3f3f3;
-  border-top: 6px solid var(--color-primary);
+  border: 4px solid rgba(255, 255, 255, 0.4);
+  border-top: 4px solid var(--color-warning); /* Highlight loading with yellow */
   border-radius: 50%;
-  width: 60px;
-  height: 60px;
+  width: 35px;
+  height: 35px;
   animation: spin 1s linear infinite;
+  margin: 0 auto 10px auto;
 }
 
 @keyframes spin {
@@ -828,63 +691,119 @@ footer {
     transform: rotate(360deg);
   }
 }
-/* ================================================= */
-/* 10. Mobile Responsiveness for Diagnosis Results */
-/* ================================================= */
 
-@media (max-width: 768px) {
-  /* STACKING: Forces the two-column grid to become one column */
-  .scan-results-grid {
-    grid-template-columns: 1fr;
-    gap: 15px; /* Added some vertical space */
+/* --- Mobile Specifics for Diagnosis Page --- */
+@media (max-width: 600px) {
+  .diagnosis-page-container {
+    padding: 20px 5%;
+    min-height: auto;
   }
 
-  /* HIDE SIDEBAR: Hides the "Scan Result" sidebar text on small screens */
-  .results-sidebar {
-    display: none;
-  }
-
-  /* TIGHTER PADDING: Reduces padding for better use of screen space */
-  .diagnosis-feature-box {
-    padding: 20px;
-    margin: 10px auto;
-  }
-
-  .diagnosis-text h2 {
-    font-size: 1.4rem;
-  }
-
-  /* MODIFIED: Keep the buttons side-by-side but allow them to take up full width.
-       The desktop style for .action-buttons will now handle the side-by-side layout, 
-       and we adjust the mobile width for better tapping experience.
-    */
   .action-buttons {
-    /* No need to stack vertically (flex-direction: column) here. 
-           Keep them side-by-side as requested. */
-    flex-direction: row;
-    gap: 15px;
+    flex-direction: column;
   }
 
   .action-buttons .secondary-btn {
-    width: 48%; /* Adjust to ensure they fit side-by-side in smaller spaces */
-    max-width: none;
-    padding: 12px 15px;
+    width: 100%;
   }
 }
-@media (max-width: 768px) {
-  /* ... existing mobile styles ... */
 
-  /* MODIFIED: Keep the buttons side-by-side and allow them to take up near-full width */
-  .action-buttons {
-    flex-direction: row;
-    gap: 15px;
-    width: 100%; /* Ensure the container uses full width */
-    justify-content: space-between; /* Spread them out */
+/* ==================================== */
+/* 10. Diagnosis Result Page Styles (result.html) */
+/* ==================================== */
+
+/* --- General Result Page Structure --- */
+.result-page-container {
+  background-color: var(--color-white);
+  padding: 30px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+  margin: 20px auto;
+}
+
+/* Add basic styling for the diagnosis content to avoid plain text */
+.result-page-container h2,
+.result-page-container h3 {
+  margin-top: 25px;
+  margin-bottom: 15px;
+  color: var(--color-text);
+}
+
+.result-page-container p {
+  margin-bottom: 15px;
+}
+
+/* --- Action Buttons in Result Page (The Fix) --- */
+.result-action-buttons {
+  /* Ensures buttons are centered and spaced */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 40px; /* Increased gap */
+  margin: 40px 0 20px 0;
+  padding: 20px;
+  border-top: 1px solid var(--color-secondary);
+}
+
+/* Base style for ALL buttons in this group */
+.result-action-buttons button,
+.result-action-buttons a {
+  /* Resetting generic button styles for better control */
+  border-radius: 50px; /* Use the rounded button style */
+  padding: 12px 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  min-width: 250px; /* Make them substantial */
+  transition: all 0.3s ease;
+
+  /* Ensure icon and text are always horizontal and centered */
+  display: flex;
+  align-items: center;
+  align-content: center;
+  align-self: center;
+  justify-content: center;
+  gap: 10px; /* Space between icon and text */
+}
+
+/* 1. Primary Button (Go to Shop for Supplies) */
+.result-action-buttons .primary-btn {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  box-shadow: 0 4px 10px rgba(56, 142, 60, 0.4); /* Stronger shadow */
+  border: none;
+}
+
+.result-action-buttons .primary-btn:hover {
+  background-color: var(--color-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(56, 142, 60, 0.6);
+}
+
+/* 2. Secondary Button (Start New Scan) */
+.result-action-buttons .secondary-btn {
+  background-color: transparent; /* Clear background */
+  color: var(--color-primary-dark);
+  border: 2px solid var(--color-primary); /* Clear, visible border */
+}
+
+.result-action-buttons .secondary-btn:hover {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+}
+
+/* --- Mobile Responsiveness --- */
+@media (max-width: 600px) {
+  .result-action-buttons {
+    flex-direction: column; /* Stack vertically on mobile */
+    align-items: center;
+    gap: px;
   }
 
-  .action-buttons .secondary-btn {
-    width: 48%; /* Each button takes slightly less than half the width */
-    max-width: none;
-    padding: 12px 15px;
+  .result-action-buttons button,
+  .result-action-buttons a {
+    width: 100; /* Almost full width on mobile */
+    min-width: unset;
   }
 }
