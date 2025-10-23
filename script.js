@@ -23,7 +23,9 @@ const finishScanButton = document.getElementById("finish-scan-button"); // For t
 // NOTE: I've removed selectors for scanResults, diagnosisText, treatmentPlan, etc.,
 // as those belong primarily to the script on result.html now.
 
+// *** FIX 1: API Timeout is increased for mobile stability ***
 const API_ENDPOINT = "http://localhost:3000/diagnose";
+const API_TIMEOUT_MS = 25000; // Set timeout to 25 seconds for mobile networks
 
 // ----------------------------------------------------
 // 1. E-COMMERCE: Local Storage Cart Management (Unchanged)
@@ -101,6 +103,52 @@ function displayCheckoutSummary() {
 // 4. AI DIAGNOSIS LOGIC (For pages/diagnosis.html)
 // ----------------------------------------------------
 
+// *** FIX 2: New Image Compression Function for Mobile Stability ***
+/**
+ * Resizes and compresses an image file to a max width for stable mobile upload.
+ * @param {File} file - The image file uploaded by the user.
+ * @param {number} maxWidth - The maximum width (in pixels) for the final image.
+ * @param {number} quality - The JPEG quality (0.0 to 1.0).
+ * @returns {Promise<string>} A Promise that resolves with the compressed base64 data URL.
+ */
+function compressImage(file, maxWidth = 1024, quality = 0.7) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        let width = img.width;
+        let height = img.height; // Calculate new dimensions based on maxWidth constraint
+
+        if (width > maxWidth) {
+          height = Math.round(height * (maxWidth / width));
+          width = maxWidth;
+        }
+
+        canvas.width = width;
+        canvas.height = height; // Draw the resized image onto the canvas
+
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height); // Convert the canvas content to a compressed JPEG data URL
+
+        const compressedDataUrl = canvas.toDataURL("image/jpeg", quality);
+        resolve(compressedDataUrl);
+      };
+
+      img.onerror = () =>
+        reject(new Error("Error loading image for compression."));
+    };
+
+    reader.onerror = () =>
+      reject(new Error("Error reading file for compression."));
+  });
+}
+
 /**
  * Helper to show only one phase of the diagnosis process.
  */
@@ -164,19 +212,7 @@ function capturePhoto() {
   processDiagnosis(imageDataURL);
 }
 
-// --- Helper function to convert File object to Data URL string ---
-const fileToBase64 = (file) => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      resolve(reader.result);
-    };
-    reader.onerror = (error) => reject(error);
-  });
-};
-
-// --- FILE UPLOAD HANDLER (FIXED) ---
+// --- FILE UPLOAD HANDLER (MODIFIED) ---
 
 async function handleFileUpload(event) {
   const file = event.target.files[0];
@@ -184,30 +220,35 @@ async function handleFileUpload(event) {
   if (file && file.type.startsWith("image/")) {
     stopCamera();
 
+    showPhase("scan-processing"); // Immediately show processing screen
+
     try {
-      const imageDataURL = await fileToBase64(file);
-      processDiagnosis(imageDataURL);
+      // *** FIX 3: Use the new compression function for uploaded files ***
+      const compressedDataURL = await compressImage(file);
+      processDiagnosis(compressedDataURL);
     } catch (e) {
-      console.error("Error reading file:", e);
-      alert("Error reading file. Please try a different image.");
+      console.error("Error reading or compressing file:", e);
+      alert(
+        "Error reading file or file is too large. Please try a different image."
+      );
+      showPhase("camera-container"); // Go back to camera view on failure
     }
   } else if (file) {
     alert("Please upload a valid image file.");
-  }
+  } // CRITICAL FIX: Reset file input value to allow the 'change' event to fire reliably on the next click.
 
-  // CRITICAL FIX: Reset file input value to allow the 'change' event to fire reliably on the next click.
   if (event.target) {
     event.target.value = null;
   }
 }
 
-// --- API CONNECTION AND RESULT REDIRECTION ---
+// --- API CONNECTION AND RESULT REDIRECTION (MODIFIED) ---
 
 /**
  * Initiates the diagnosis process by sending Data URL to the backend.
  */
 function processDiagnosis(imageDataURL) {
-  showPhase("scan-processing");
+  // showPhase("scan-processing"); // Already done in handleFileUpload/capturePhoto
   localStorage.setItem("scannedImageURL", imageDataURL);
 
   callGeminiApi(imageDataURL);
@@ -215,7 +256,10 @@ function processDiagnosis(imageDataURL) {
 
 async function callGeminiApi(imageDataURL) {
   const userPrompt =
-    "Analyze this image of a plant leaf or part. Provide a clear, concise diagnosis, cause, confidence, and treatment plan for a local farmer in Sierra Leone.";
+    "Analyze this image of a plant leaf or part. Provide a clear, concise diagnosis, cause, confidence, and treatment plan for a local farmer in Sierra Leone."; // *** FIX 4: Use AbortController for reliable timeout ***
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
 
   try {
     const response = await fetch(API_ENDPOINT, {
@@ -225,7 +269,10 @@ async function callGeminiApi(imageDataURL) {
         imageDataURL: imageDataURL,
         prompt: userPrompt,
       }),
+      signal: controller.signal, // Pass the signal to the fetch request
     });
+
+    clearTimeout(timeoutId); // Clear timeout on successful connection
 
     if (!response.ok) {
       const errorData = await response
@@ -238,28 +285,34 @@ async function callGeminiApi(imageDataURL) {
       );
     }
 
-    const data = await response.json();
+    const data = await response.json(); // Store the structured diagnosis result and redirect
 
-    // Store the structured diagnosis result and redirect
     localStorage.setItem("diagnosisResult", JSON.stringify(data));
     window.location.href = "result.html";
   } catch (error) {
-    console.error("Diagnosis Failed:", error);
+    clearTimeout(timeoutId); // Ensure timeout is cleared on any error
 
-    // ERROR FALLBACK: Store error and redirect
+    console.error("Diagnosis Failed:", error);
+    let errorMessage = `The server or AI connection failed. (Error: ${error.message})`;
+    if (error.name === "AbortError") {
+      errorMessage =
+        "The diagnosis timed out. Your connection may be too slow, or the server is unresponsive.";
+    } // ERROR FALLBACK: Store error and redirect
+
     const errorData = {
       plant_name: "Diagnosis Failed",
       health_status: "Error",
-      disease: "Connection/API Failure",
+      disease: "Connection/Processing Failure",
       confidence: "Low",
-      cause: `The server or AI connection failed. Check your Node.js console. (Error: ${error.message})`,
+      cause: errorMessage,
       treatment_steps: [
-        "Ensure server is running",
-        "Check API key",
-        "Try again",
+        "1. Ensure your Node.js server is running.",
+        "2. Check the server console for API key errors.",
+        "3. If using mobile data, try a faster network (Wi-Fi).",
+        "4. Try uploading a different photo.",
       ],
       recommendation_summary:
-        "Please check your system configuration immediately.",
+        "A connection or processing issue prevented the diagnosis. See details below.",
       status_class: "status-unhealthy",
     };
     localStorage.setItem("diagnosisResult", JSON.stringify(errorData));
@@ -268,39 +321,34 @@ async function callGeminiApi(imageDataURL) {
 }
 
 // ----------------------------------------------------
-// 5. Initialisation and Event Listeners (CONSOLIDATED)
+// 5. Initialisation and Event Listeners (CONSOLIDATED) (Unchanged)
 // ----------------------------------------------------
 
 function initializeScanFeature() {
   // Initial State: Show default camera container
   showPhase("camera-container");
-  stopCamera();
+  stopCamera(); // A. Start Camera Button Listener
 
-  // A. Start Camera Button Listener
   if (startCameraButton) {
     startCameraButton.addEventListener("click", startCamera);
-  }
+  } // B. Capture Button Listener
 
-  // B. Capture Button Listener
   if (captureButton) {
     captureButton.addEventListener("click", capturePhoto);
-  }
+  } // C. Upload Photo Button (Triggers the hidden file input)
 
-  // C. Upload Photo Button (Triggers the hidden file input)
   if (uploadPhotoButton) {
     uploadPhotoButton.addEventListener("click", () => {
       if (fileUploadInput) {
         fileUploadInput.click();
       }
     });
-  }
+  } // D. File Input Change Listener
 
-  // D. File Input Change Listener
   if (fileUploadInput) {
     fileUploadInput.addEventListener("change", handleFileUpload);
-  }
+  } // E. Finish Scan Button (For use on the result.html if needed)
 
-  // E. Finish Scan Button (For use on the result.html if needed)
   if (finishScanButton) {
     finishScanButton.addEventListener("click", () => {
       // Assuming this redirects back to diagnosis.html
@@ -312,9 +360,8 @@ function initializeScanFeature() {
 document.addEventListener("DOMContentLoaded", () => {
   // General UX
   updateCartCount();
-  initServiceCardHovers();
+  initServiceCardHovers(); // E-commerce: Attach click listeners to all "Buy Now" buttons
 
-  // E-commerce: Attach click listeners to all "Buy Now" buttons
   document
     .querySelectorAll(".product-card .add-to-cart-btn")
     .forEach((button) => {
@@ -330,13 +377,10 @@ document.addEventListener("DOMContentLoaded", () => {
           alert("Error: Product data missing. Cannot add to cart.");
         }
       });
-    });
+    }); // Checkout Page
 
-  // Checkout Page
-  displayCheckoutSummary();
+  displayCheckoutSummary(); // Diagnosis Page: Initialize the core scan features // Check for the presence of diagnosis elements before initializing
 
-  // Diagnosis Page: Initialize the core scan features
-  // Check for the presence of diagnosis elements before initializing
   if (cameraContainer) {
     initializeScanFeature();
   }
