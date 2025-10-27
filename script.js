@@ -212,31 +212,31 @@ function capturePhoto() {
   processDiagnosis(imageDataURL);
 }
 
-// --- FILE UPLOAD HANDLER (MODIFIED) ---
-
+// --- FILE UPLOAD HANDLER (TEMPORARY TEST: Bypass Compression) ---
 async function handleFileUpload(event) {
   const file = event.target.files[0];
 
   if (file && file.type.startsWith("image/")) {
     stopCamera();
+    showPhase("scan-processing"); // Use a FileReader to load the image data as a Base64 URL
 
-    showPhase("scan-processing"); // Immediately show processing screen
+    const reader = new FileReader();
 
-    try {
-      // *** FIX 3: Use the new compression function for uploaded files ***
-      const compressedDataURL = await compressImage(file);
-      processDiagnosis(compressedDataURL);
-    } catch (e) {
-      console.error("Error reading or compressing file:", e);
-      alert(
-        "Error reading file or file is too large. Please try a different image."
-      );
-      showPhase("camera-container"); // Go back to camera view on failure
-    }
+    reader.onload = () => {
+      // CRITICAL: The temporary test sends the RAW data URL (uncompressed, unrotated)
+      processDiagnosis(reader.result);
+    };
+
+    reader.onerror = (e) => {
+      console.error("Error reading file:", e);
+      alert("Error reading file. Please try a different image.");
+      showPhase("camera-container");
+    }; // Start reading the file
+
+    reader.readAsDataURL(file);
   } else if (file) {
     alert("Please upload a valid image file.");
   } // CRITICAL FIX: Reset file input value to allow the 'change' event to fire reliably on the next click.
-
   if (event.target) {
     event.target.value = null;
   }
