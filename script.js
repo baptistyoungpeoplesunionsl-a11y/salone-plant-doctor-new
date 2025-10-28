@@ -23,8 +23,10 @@ const finishScanButton = document.getElementById("finish-scan-button"); // For t
 // NOTE: I've removed selectors for scanResults, diagnosisText, treatmentPlan, etc.,
 // as those belong primarily to the script on result.html now.
 
-// *** FIX 1: API Timeout is increased for mobile stability ***
-const API_ENDPOINT = "http://localhost:3000/diagnose";
+// ************************************************************
+// *** CRITICAL FIX: API_ENDPOINT is changed to Netlify Function path ***
+// ************************************************************
+const API_ENDPOINT = "/.netlify/functions/diagnose";
 const API_TIMEOUT_MS = 25000; // Set timeout to 25 seconds for mobile networks
 
 // ----------------------------------------------------
@@ -303,8 +305,8 @@ async function callGeminiApi(imageDataURL) {
       confidence: "Low",
       cause: errorMessage,
       treatment_steps: [
-        "1. Ensure your Node.js server is running.",
-        "2. Check the server console for API key errors.",
+        "1. Ensure your backend function is deployed correctly.",
+        "2. Check Netlify function logs for API key errors.",
         "3. If using mobile data, try a faster network (Wi-Fi).",
         "4. Try uploading a different photo.",
       ],
