@@ -1,5 +1,1 @@
 [build]
-functions = "netlify/functions"
-
-[functions]
-timeout = 30
