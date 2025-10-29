@@ -1,12 +1,5 @@
-# netlify.toml
-
 [build]
-  # This tells Netlify to package the code inside this folder 
-  # as a Serverless Function during the build process.
-  functions = "netlify/functions"
-  
+functions = "netlify/functions"
+
 [functions]
-  # This gives the AI diagnosis up to 30 seconds to complete, 
-  # which helps prevent timeouts on slow networks.
-  timeout = 30
-  
+timeout = 30
