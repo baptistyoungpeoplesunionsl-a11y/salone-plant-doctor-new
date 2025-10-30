@@ -241,96 +241,63 @@ async function handleFileUpload(event) {
   }
 }
 
-// --- API CONNECTION AND RESULT REDIRECTION (MODIFIED FOR RETRY) ---
+// --- API CONNECTION AND RESULT REDIRECTION (MODIFIED) ---
 
-// *** NEW: Utility to handle retries on external API failure ***
-async function fetchWithRetry(imageDataURL, userPrompt, maxRetries = 3) {
-  const API_ENDPOINT = "/.netlify/functions/diagnose";
-  const API_TIMEOUT_MS = 25000; // 25 seconds per attempt
+/**
+ * Initiates the diagnosis process by sending Data URL to the backend.
+ */
+function processDiagnosis(imageDataURL) {
+  // showPhase("scan-processing"); // Already done in handleFileUpload/capturePhoto
+  localStorage.setItem("scannedImageURL", imageDataURL);
 
-  for (let i = 0; i < maxRetries; i++) {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
-
-    try {
-      const response = await fetch(API_ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          imageDataURL: imageDataURL,
-          prompt: userPrompt,
-        }),
-        signal: controller.signal,
-      });
-
-      clearTimeout(timeoutId); // Clear timeout on successful connection/response
-
-      // SUCCESS: Response OK (Status 200-299)
-      if (response.ok) {
-        return response;
-      }
-
-      // FAILURE: Non-OK status (e.g., 500 from Netlify, which means 503 from Gemini)
-      const errorData = await response
-        .json()
-        .catch(() => ({ error: "Server error: Check Node.js console" }));
-
-      // If this is the last attempt, throw the final error.
-      if (i === maxRetries - 1) {
-        throw new Error(
-          `Server Status Error: ${response.status} - ${
-            errorData.error || "Unknown server issue"
-          } (Failed after ${maxRetries} attempts)`
-        );
-      }
-
-      console.warn(
-        `Attempt ${i + 1} failed (Status: ${
-          response.status
-        }). Retrying in 2 seconds...`
-      );
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait 2s before retrying
-    } catch (error) {
-      clearTimeout(timeoutId); // Ensure timeout is cleared on AbortError or network failure
-
-      // Handle timeout (AbortError) or network failure
-      if (i === maxRetries - 1) {
-        throw error; // Throw the error on the final attempt
-      }
-      console.warn(
-        `Attempt ${i + 1} failed (Error: ${
-          error.name || "Network"
-        }). Retrying in 2 seconds...`
-      );
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait 2s before retrying
-    }
-  }
+  callGeminiApi(imageDataURL);
 }
 
 async function callGeminiApi(imageDataURL) {
   const userPrompt =
-    "Analyze this image of a plant leaf or part. Provide a clear, concise diagnosis, cause, confidence, and treatment plan for a local farmer in Sierra Leone.";
+    "Analyze this image of a plant leaf or part. Provide a clear, concise diagnosis, cause, confidence, and treatment plan for a local farmer in Sierra Leone."; // *** FIX 4: Use AbortController for reliable timeout ***
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
 
   try {
-    // *** CRITICAL CHANGE: Use the new fetchWithRetry function ***
-    const response = await fetchWithRetry(imageDataURL, userPrompt, 3);
+    const response = await fetch(API_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        imageDataURL: imageDataURL,
+        prompt: userPrompt,
+      }),
+      signal: controller.signal, // Pass the signal to the fetch request
+    });
+
+    clearTimeout(timeoutId); // Clear timeout on successful connection
+
+    if (!response.ok) {
+      const errorData = await response
+        .json()
+        .catch(() => ({ error: "Server error: Check Node.js console" }));
+      throw new Error(
+        `Server Status Error: ${response.status} - ${
+          errorData.error || "Unknown server issue"
+        }`
+      );
+    }
 
     const data = await response.json(); // Store the structured diagnosis result and redirect
 
     localStorage.setItem("diagnosisResult", JSON.stringify(data));
     window.location.href = "result.html";
   } catch (error) {
-    // This catch block will only execute if ALL 3 attempts fail
+    clearTimeout(timeoutId); // Ensure timeout is cleared on any error
 
-    console.error("Diagnosis Failed After Retries:", error);
+    console.error("Diagnosis Failed:", error);
     let errorMessage = `The server or AI connection failed. (Error: ${error.message})`;
-
     if (error.name === "AbortError") {
       errorMessage =
-        "The diagnosis timed out on all attempts. Your connection may be too slow, or the server is unresponsive.";
-    }
+        "The diagnosis timed out. Your connection may be too slow, or the server is unresponsive.";
+    } // ERROR FALLBACK: Store error and redirect
 
-    // ERROR FALLBACK: Store error and redirect
     const errorData = {
       plant_name: "Diagnosis Failed",
       health_status: "Error",
@@ -338,12 +305,13 @@ async function callGeminiApi(imageDataURL) {
       confidence: "Low",
       cause: errorMessage,
       treatment_steps: [
-        "1. Wait a moment (The AI server may be overloaded) and try again.",
-        "2. Ensure you have a stable network connection.",
-        "3. Try uploading a photo with better focus.",
+        "1. Ensure your backend function is deployed correctly.",
+        "2. Check Netlify function logs for API key errors.",
+        "3. If using mobile data, try a faster network (Wi-Fi).",
+        "4. Try uploading a different photo.",
       ],
       recommendation_summary:
-        "A connection or processing issue prevented the diagnosis after multiple retries. See details below.",
+        "A connection or processing issue prevented the diagnosis. See details below.",
       status_class: "status-unhealthy",
     };
     localStorage.setItem("diagnosisResult", JSON.stringify(errorData));
