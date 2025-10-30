@@ -1,5 +1,6 @@
-[build]
-functions = "netlify/functions"
-
 [functions]
-timeout = 30
+  directory = "netlify/functions"
+
+# 👇 ADD THIS SECTION to apply the timeout only to the 'diagnose' function
+  [functions.diagnose]
+    timeout = 30
