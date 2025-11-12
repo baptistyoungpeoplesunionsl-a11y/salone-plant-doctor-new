@@ -23,9 +23,9 @@ function dataURLToGenerativePart(imageDataURL) {
   };
 }
 
-// --- STRUCTURED OUTPUT CONFIGURATION (COPIED FROM server.js) ---
+// --- STRUCTURED OUTPUT CONFIGURATION (MODIFIED for Krio Audio Keys) ---
 const systemInstruction =
-  "You are the 'Salone Plant Doctor' expert. Your sole purpose is to analyze the user-provided image of a plant and provide a highly concise, structured diagnosis and treatment plan tailored for easy comprehension by a local farmer in Sierra Leone. Focus only on Tomato, Cassava, and Lettuce diagnosis.";
+  "You are the 'Salone Plant Doctor' expert. Your sole purpose is to analyze the user-provided image of a plant and provide a highly concise, structured diagnosis and treatment plan tailored for easy comprehension by a local farmer in Sierra Leone. For the fields 'disease_audio_key' and 'summary_audio_key', you MUST output a single, URL-friendly, lowercase, hyphenated key (e.g., 'late-blight' or 'increase-water'). Do not output the full translation. Focus only on Tomato, Cassava, and Lettuce diagnosis.";
 
 const responseSchema = {
   type: "object",
@@ -43,7 +43,12 @@ const responseSchema = {
       type: "string",
       description:
         "The most probable plant disease or deficiency name, or 'None' if healthy.",
-    },
+    }, // 👇 NEW: Audio Key 1 for Disease
+    disease_audio_key: {
+      type: "string",
+      description:
+        "A single, lowercase, hyphenated key based on the disease name (e.g., 'early-blight' or 'healthy'). MUST be URL-friendly.",
+    }, // 👆 END NEW FIELD 1
     confidence: {
       type: "string",
       description: "A confidence rating: High, Medium, or Low.",
@@ -67,7 +72,12 @@ const responseSchema = {
       type: "string",
       description:
         "A single, short, encouraging sentence summarizing the most important next step for the farmer (e.g., 'Start fungicide treatment immediately.').",
-    },
+    }, // 👇 NEW: Audio Key 2 for Summary
+    summary_audio_key: {
+      type: "string",
+      description:
+        "A single, lowercase, hyphenated key representing the summary's core action (e.g., 'start-fungicide' or 'keep-monitoring'). MUST be URL-friendly.",
+    }, // 👆 END NEW FIELD 2
     status_class: {
       type: "string",
       description:
@@ -82,6 +92,8 @@ const responseSchema = {
     "cause",
     "treatment_steps",
     "recommendation_summary",
+    "disease_audio_key", // 👈 ADDED
+    "summary_audio_key", // 👈 ADDED
     "status_class",
   ],
 };
@@ -105,9 +117,8 @@ exports.handler = async (event, context) => {
       };
     }
 
-    const imagePart = dataURLToGenerativePart(imageDataURL);
+    const imagePart = dataURLToGenerativePart(imageDataURL); // 3. CALL THE GEMINI API
 
-    // 3. CALL THE GEMINI API
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
       contents: [{ role: "user", parts: [imagePart, { text: prompt }] }],
