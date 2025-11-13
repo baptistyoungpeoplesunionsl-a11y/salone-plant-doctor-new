@@ -1,179 +1,282 @@
 <!DOCTYPE html>
 <html lang="en">
-       
+           
   <head>
-               
+                       
     <meta charset="UTF-8" />
-               
+                       
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-               
+                       
     <title>Diagnosis Result - Salone Plant Doctor</title>
-               
+                       
     <link rel="stylesheet" href="../style.css" />
-               
+                       
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
     />
-           
+                 
   </head>
-       
+           
   <body>
-               
+                       
     <header>
-                       
+                                   
       <div class="logo">
-                        <a href="../index.html">Back</a>                
-        <span>Salone Plant Doctor</span>            
+                                <a href="../index.html">Back</a>                
+                <span>Salone Plant Doctor</span>                  
       </div>
-                       
+                                   
       <nav class="main-nav">
-                               
+                                               
         <ul>
-                                       
+                                                           
           <li><a href="../index.html">Home</a></li>
-                                       
+                                                           
           <li><a href="#">Services</a></li>
-                                       
+                                                           
           <li><a href="shop.html">Shop</a></li>
-                                   
+                                                     
         </ul>
-                           
+                                         
       </nav>
-                  <button class="auth-btn">Log In / Sign</button>        
+                        <button class="auth-btn">Log In / Sign</button>        
+         
     </header>
 
-               
+                       
     <main class="container diagnosis-page-container">
-           
+                       
       <div class="diagnosis-feature-box">
-                               
+                                               
         <h1>Diagnosis Complete</h1>
-                               
+                                               
         <p class="subtitle">
-                   
+                                       
           <strong id="diagnosis-plant-name"
             >Plant identified accurately.</strong
           >
-                                   
+                                                     
         </p>
 
-                               
+                                               
         <div class="scan-results-grid">
-                                       
+                                                           
           <div class="results-sidebar">
-                                    <i class="fas fa-microscope"></i>          
+                                               
+            <i class="fas fa-microscope"></i>                                  
                          
             <h2>Scan Result</h2>
-                                           
+                                                                 
           </div>
 
-                                       
+                                                           
           <div class="results-content">
-                                                           
+                                                                               
+               
             <div id="result-photo-display" class="scanned-image-container">
-                                                       
+                                                                               
+                 
               <img
                 src="../assets/placeholder-cassava-leaf.jpg"
                 alt="Scanned Plant Leaf"
               />
-                                                   
+                                                                             
             </div>
 
-                                                           
+                                                                               
+               
             <div id="status-header" class="diagnosis-text">
-                                                       
+                                                                               
+                 
               <h2 id="diagnosis-health-status">Loading Diagnosis...</h2>
-                                                                     
+                                                                               
+                               
               <p id="diagnosis-issue">Loading specific issue...</p>
-                                                       
+                                                                               
+                 
               <p id="diagnosis-confidence">Loading confidence level...</p>
-                                                   
+                                                                             
             </div>
 
-                                               
+                                                                       
             <div class="diagnosis-detail-section">
-                                                       
+                                                                               
+                 
               <h4>Why is this happening? (Cause)</h4>
-                                                       
+                                                                               
+                 
               <p id="diagnosis-cause">Loading cause...</p>
-                                                   
+                                                                             
             </div>
 
-                                               
+                                                                       
             <div class="recommendation-box">
-                                                       
+                                                                               
+                 
               <h4>🌱 Farmer Summary (What to Do)</h4>
-                                                       
+                                                                               
+                 
               <p id="recommendation-summary">Loading summary...</p>
-                                                   
+                                                                             
             </div>
 
-                                               
+                                                                       
             <div class="action-buttons" style="margin-bottom: 30px">
-                                                       
+                                                                               
+                 
               <button id="play-audio-krio-btn" class="secondary-btn">
-                                               
+                                                                               
                 <i class="fas fa-volume-up"></i> Listen in Krio                
-                                           
+                                                                         
               </button>
-                                                       
+                                                                               
+                 
               <button id="save-result-btn" class="secondary-btn">
-                                                <i class="fas fa-save"></i> Save
-                Result                                            
+                                                               
+                <i class="fas fa-save"></i> Save                 Result        
+                                                                 
               </button>
-                                                   
+                                                                             
+            </div>
+
+                                                                       
+            <div id="treatment-plan">
+                                                                               
+                 
+              <h4>Recommended Treatment Plan</h4>
+                                                                               
+                 
+              <ol id="treatment-plan-list">
+                                                                               
+                               
+                <li>Loading treatment steps...</li>
+                                                                               
+                         
+              </ol>
+                                                                             
             </div>
 
                                                
-            <div id="treatment-plan">
-                                                       
-              <h4>Recommended Treatment Plan</h4>
-                                                       
-              <ol id="treatment-plan-list">
-                                                               
-                <li>Loading treatment steps...</li>
-                                                           
-              </ol>
-                                                   
-            </div>
-
-                       
             <div class="result-action-buttons">
+                           
               <a href="shop.html" class="primary-btn">
-                                    <i class="fas fa-shopping-cart"></i> Go to
-                Shop for Supplies                            
+                                                   
+                <i class="fas fa-shopping-cart"></i> Go to                 Shop
+                for Supplies                                          
               </a>
 
-                             
+                                                         
               <button
                 id="finish-scan-button"
                 class="secondary-btn"
                 onclick="window.location.href='diagnosis.html';"
               >
-                                    <i class="fas fa-redo"></i> Start New Scan  
-                                       
+                                                   
+                <i class="fas fa-redo"></i> Start New Scan                      
+                                                 
               </button>
-                         
+                                                   
             </div>
-                     
+                                           
           </div>
-                                   
+                                                     
         </div>
-                           
+                                         
       </div>
-                   
+                             
     </main>
 
-               
+                       
     <footer>
-                       
+                                   
       <p>&copy; Salone Plant Doctor | Privacy Policy | Terms of Service</p>
-                   
+                             
     </footer>
 
-               
+                       
     <script>
+      // --- START PHASE 3: KRIO AUDIO PLAYBACK LOGIC ---
+
+      // 1. Function to play a single audio file and return a Promise
+      function playAudioClip(key) {
+        return new Promise((resolve) => {
+          // Construct the full path to the MP3 file using the key
+          const audioPath = `/audio/${key}.mp3`;
+          const audio = new Audio(audioPath);
+
+          // Event listener to know when the audio finishes playing
+          audio.onended = () => {
+            console.log(`Finished playing: ${key}`);
+            resolve(); // Allows the sequence to move to the next step
+          };
+
+          // Handle errors if the file can't be found (e.g., key mismatch or file missing)
+          audio.onerror = (e) => {
+            console.error(
+              `Error loading or playing audio file: ${audioPath}`,
+              e
+            );
+            // Alert the user and resolve to keep the sequence from getting stuck
+            alert(
+              `Error: Krio audio file not found for key: ${key}. Check the /audio/ folder.`
+            );
+            resolve();
+          };
+
+          console.log(`Playing audio: ${audioPath}`);
+          audio.play().catch((error) => {
+            // Catch error if the browser prevents auto-play without user interaction
+            console.error("Autoplay failed:", error);
+            // This is a common mobile issue, alerting the user to press again is often required.
+            alert(
+              "Audio requires a single tap to start. Please tap the button again."
+            );
+            resolve();
+          });
+        });
+      }
+
+      // 2. Main function to chain the two clips together
+      async function playFullKrioDiagnosis(diagnosisData) {
+        const button = document.getElementById("play-audio-krio-btn");
+        if (!button) return;
+
+        // Get the keys from the diagnosis data
+        const diseaseKey = diagnosisData.disease_audio_key;
+        const summaryKey = diagnosisData.summary_audio_key;
+
+        if (!diseaseKey || !summaryKey) {
+          alert(
+            "Audio keys are missing from the diagnosis result. Check the backend function."
+          );
+          return;
+        }
+
+        // Disable button to prevent re-press while playing
+        button.disabled = true;
+        button.textContent = "🔊 Playing...";
+
+        try {
+          // 1. Play the Disease Clip (e.g., 'late-blight.mp3')
+          await playAudioClip(diseaseKey);
+
+          // Wait for 500 milliseconds (half a second pause between clips)
+          await new Promise((r) => setTimeout(r, 500));
+
+          // 2. Play the Summary Action Clip (e.g., 'start-fungicide.mp3')
+          await playAudioClip(summaryKey);
+        } catch (e) {
+          console.error("Error during playback chain:", e);
+        }
+
+        // Re-enable button after both clips finish (or an error occurs)
+        button.disabled = false;
+        button.textContent = '<i class="fas fa-volume-up"></i> Listen in Krio';
+      }
+
+      // --- EXISTING DOM CONTENT LOADED LOGIC (MODIFIED) ---
+
       document.addEventListener("DOMContentLoaded", () => {
         // 1. Retrieve data from Local Storage
         const resultDataJson = localStorage.getItem("diagnosisResult");
@@ -209,7 +312,21 @@
           return;
         }
 
-        const data = JSON.parse(resultDataJson); // ---------------------------------------------------- // A. Image Display and Page Styling // ---------------------------------------------------- // Display the image that was scanned
+        const data = JSON.parse(resultDataJson); // The variable 'data' now holds the AI's result.
+
+        // --- AUDIO PLAYBACK SETUP (MODIFIED) ---
+        // Find the button and attach the new playback function, passing the 'data' variable
+        const playAudioBtn = document.getElementById("play-audio-krio-btn");
+        if (playAudioBtn) {
+          playAudioBtn.addEventListener("click", () => {
+            playFullKrioDiagnosis(data); // Pass the diagnosis data directly
+          });
+        } // ----------------------------------------------------
+        // END AUDIO PLAYBACK SETUP
+
+        // A. Image Display and Page Styling
+        // ----------------------------------------------------
+        // Display the image that was scanned
 
         if (resultPhotoDisplay && scannedImageURL) {
           // Replaces the placeholder image with the scanned image
@@ -219,7 +336,10 @@
         if (statusHeader && data.status_class) {
           // Ensure it keeps the base 'diagnosis-text' class
           statusHeader.className = `diagnosis-text ${data.status_class}`;
-        } // ---------------------------------------------------- // B. Diagnosis Summary Hydration // ---------------------------------------------------- // Plant Name (e.g., Plant Identified: Cassava)
+        } // ----------------------------------------------------
+        // B. Diagnosis Summary Hydration
+        // ----------------------------------------------------
+        // Plant Name (e.g., Plant Identified: Cassava)
 
         if (diagnosisPlantName) {
           diagnosisPlantName.innerHTML = `Plant Identified: <strong>${
@@ -260,7 +380,9 @@
         if (recommendationSummary) {
           recommendationSummary.textContent =
             data.recommendation_summary || "Please consult an expert.";
-        } // ---------------------------------------------------- // C. Treatment Steps // ----------------------------------------------------
+        } // ----------------------------------------------------
+        // C. Treatment Steps
+        // ----------------------------------------------------
 
         if (treatmentPlanList) {
           treatmentPlanList.innerHTML = ""; // Clear hardcoded steps
@@ -277,14 +399,7 @@
               treatmentPlanList.appendChild(li);
             });
           }
-        } // --- Action Button Listeners ---
-
-        const playAudioBtn = document.getElementById("play-audio-krio-btn");
-        if (playAudioBtn) {
-          playAudioBtn.addEventListener("click", () => {
-            alert("Krio Audio Playback feature coming soon!");
-          });
-        }
+        } // --- Action Button Listeners (ONLY SAVE REMAINS HERE) ---
 
         const saveResultBtn = document.getElementById("save-result-btn");
         if (saveResultBtn) {
@@ -294,6 +409,6 @@
         }
       });
     </script>
-           
+                 
   </body>
 </html>
