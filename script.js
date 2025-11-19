@@ -1,4 +1,3 @@
-// script.js
 // --- Salone Plant Doctor Frontend Logic ---
 
 // ----------------------------------------------------
@@ -24,9 +23,21 @@ const finishScanButton = document.getElementById("finish-scan-button"); // For t
 // as those belong primarily to the script on result.html now.
 
 // ************************************************************
-// *** CRITICAL FIX: API_ENDPOINT is changed to Netlify Function path ***
+// *** MODIFIED BLOCK: Conditional API_ENDPOINT for Local vs. Production ***
 // ************************************************************
-const API_ENDPOINT = "/.netlify/functions/diagnose";
+
+// Check if the current environment is local (running on 127.0.0.1 or localhost)
+const isLocalhost =
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1";
+
+// Set API_ENDPOINT conditionally.
+// If local (for VS Code Live Server + netlify dev), use the absolute URL to port 8888.
+// If production (live on Netlify), use the safe relative path.
+const API_ENDPOINT = isLocalhost
+  ? "http://localhost:8888/.netlify/functions/diagnose"
+  : "/.netlify/functions/diagnose";
+
 const API_TIMEOUT_MS = 25000; // Set timeout to 25 seconds for mobile networks
 
 // ----------------------------------------------------
@@ -46,7 +57,7 @@ function saveCart(cart) {
 function addItemToCartAndCheckout(name, price) {
   const cart = [{ name, price }];
   saveCart(cart);
-  window.location.href = "./pages/checkout.html";
+  window.location.href = "./checkout.html"; // Adjusted for relative path use on result.html/diagnosis.html
 }
 
 // ----------------------------------------------------
@@ -105,13 +116,8 @@ function displayCheckoutSummary() {
 // 4. AI DIAGNOSIS LOGIC (For pages/diagnosis.html)
 // ----------------------------------------------------
 
-// *** FIX 2: New Image Compression Function for Mobile Stability ***
 /**
  * Resizes and compresses an image file to a max width for stable mobile upload.
- * @param {File} file - The image file uploaded by the user.
- * @param {number} maxWidth - The maximum width (in pixels) for the final image.
- * @param {number} quality - The JPEG quality (0.0 to 1.0).
- * @returns {Promise<string>} A Promise that resolves with the compressed base64 data URL.
  */
 function compressImage(file, maxWidth = 1024, quality = 0.7) {
   return new Promise((resolve, reject) => {
@@ -214,7 +220,7 @@ function capturePhoto() {
   processDiagnosis(imageDataURL);
 }
 
-// --- FILE UPLOAD HANDLER (Permanent Fix: Re-enables Compression) ---
+// --- FILE UPLOAD HANDLER ---
 async function handleFileUpload(event) {
   const file = event.target.files[0];
 
@@ -241,7 +247,7 @@ async function handleFileUpload(event) {
   }
 }
 
-// --- API CONNECTION AND RESULT REDIRECTION (MODIFIED) ---
+// --- API CONNECTION AND RESULT REDIRECTION ---
 
 /**
  * Initiates the diagnosis process by sending Data URL to the backend.
@@ -287,6 +293,7 @@ async function callGeminiApi(imageDataURL) {
     const data = await response.json(); // Store the structured diagnosis result and redirect
 
     localStorage.setItem("diagnosisResult", JSON.stringify(data));
+    // The image data URL is now stored in the diagnosisResult for display
     window.location.href = "result.html";
   } catch (error) {
     clearTimeout(timeoutId); // Ensure timeout is cleared on any error
@@ -298,13 +305,15 @@ async function callGeminiApi(imageDataURL) {
         "The diagnosis timed out. Your connection may be too slow, or the server is unresponsive.";
     } // ERROR FALLBACK: Store error and redirect
 
+    // This error structure must match the Gemini response structure
     const errorData = {
       plant_name: "Diagnosis Failed",
       health_status: "Error",
       disease: "Connection/Processing Failure",
       confidence: "Low",
-      cause: errorMessage,
+      cause: errorMessage, // Matches the new 'cause' field
       treatment_steps: [
+        // Matches the new 'treatment_steps' field
         "1. Ensure your backend function is deployed correctly.",
         "2. Check Netlify function logs for API key errors.",
         "3. If using mobile data, try a faster network (Wi-Fi).",
@@ -313,6 +322,9 @@ async function callGeminiApi(imageDataURL) {
       recommendation_summary:
         "A connection or processing issue prevented the diagnosis. See details below.",
       status_class: "status-unhealthy",
+      // Include fallback audio keys for error state
+      disease_audio_key: "error",
+      summary_audio_key: "try-again",
     };
     localStorage.setItem("diagnosisResult", JSON.stringify(errorData));
     window.location.href = "result.html";
@@ -320,7 +332,197 @@ async function callGeminiApi(imageDataURL) {
 }
 
 // ----------------------------------------------------
-// 5. Initialisation and Event Listeners (CONSOLIDATED) (Unchanged)
+// 5. RESULT PAGE LOGIC (NEW SECTION for pages/result.html)
+// ----------------------------------------------------
+
+// --- NEW AUDIO PLAYBACK LOGIC ---
+
+/**
+ * 1. Function to play a single audio file and return a Promise
+ */
+function playAudioClip(key) {
+  return new Promise((resolve) => {
+    // Construct the full path to the MP3 file using the key
+    const audioPath = `/audio/${key}.mp3`;
+    const audio = new Audio(audioPath);
+
+    // Event listener to know when the audio finishes playing
+    audio.onended = () => {
+      console.log(`Finished playing: ${key}`);
+      resolve(); // Allows the sequence to move to the next step
+    };
+
+    // Handle errors if the file can't be found (e.g., key mismatch or file missing)
+    audio.onerror = (e) => {
+      console.error(`Error loading or playing audio file: ${audioPath}`, e);
+      // Alert the user and resolve to keep the sequence from getting stuck
+      alert(
+        `Error: Krio audio file not found for key: ${key}. Check the /audio/ folder.`
+      );
+      resolve();
+    };
+
+    console.log(`Playing audio: ${audioPath}`);
+    audio.play().catch((error) => {
+      // Catch error if the browser prevents auto-play without user interaction
+      console.error("Autoplay failed:", error);
+      // Alerting the user to press again is often required on mobile.
+      alert(
+        "Audio requires a single tap to start. Please tap the button again."
+      );
+      resolve();
+    });
+  });
+}
+
+/**
+ * Ensures the correct audio key is selected, substituting 'none' or missing keys
+ * with the appropriate 'healthy' key if the diagnosis is healthy.
+ */
+function getSanitizedAudioKeys(diagnosisData) {
+  let diseaseKey = diagnosisData.disease_audio_key || "";
+  let summaryKey = diagnosisData.summary_audio_key || "continue-good-practices"; // Fallback for summary
+
+  // FIX: If the diagnosis is healthy, force the disease key to 'healthy'
+  // to avoid looking for 'none.mp3' or a missing key.
+  if (
+    diagnosisData.health_status &&
+    diagnosisData.health_status.toLowerCase() === "healthy"
+  ) {
+    diseaseKey = "healthy";
+  }
+
+  // Ensure the summary key is set for the 'Healthy' path, as seen in the screenshot error
+  if (!summaryKey || summaryKey === "try-again") {
+    summaryKey = "continue-good-practices";
+  }
+
+  return { diseaseKey, summaryKey };
+}
+
+/**
+ * Main function to chain the two clips together
+ */
+async function playFullKrioDiagnosis(diagnosisData) {
+  const button = document.getElementById("listen-krio-btn");
+  if (!button) return;
+
+  // Use the helper to get reliable keys, fixing the "None" issue
+  const { diseaseKey, summaryKey } = getSanitizedAudioKeys(diagnosisData);
+
+  if (!diseaseKey) {
+    alert("Fatal Audio Error: Could not determine the primary audio key.");
+    return;
+  }
+
+  // Disable button to prevent re-press while playing
+  button.disabled = true;
+  button.textContent = "🔊 Playing...";
+
+  try {
+    // 1. Play the Primary Clip (Healthy or Disease)
+    await playAudioClip(diseaseKey);
+
+    // Wait for 500 milliseconds (half a second pause between clips)
+    await new Promise((r) => setTimeout(r, 500));
+
+    // 2. Play the Summary Action Clip (What to Do)
+    await playAudioClip(summaryKey);
+  } catch (e) {
+    console.error("Error during playback chain:", e);
+  }
+
+  // Re-enable button after both clips finish (or an error occurs)
+  button.disabled = false;
+  button.innerHTML = '<i class="fas fa-volume-up"></i> Listen in Krio';
+}
+// --- END NEW AUDIO PLAYBACK LOGIC ---
+
+/**
+ * Displays the diagnosis results on result.html using data from localStorage.
+ */
+function displayDiagnosisResult() {
+  const resultJson = localStorage.getItem("diagnosisResult");
+  const imageURL = localStorage.getItem("scannedImageURL");
+
+  if (!resultJson) {
+    // Fallback if no result data is found
+    document.querySelector(".result-page-container").innerHTML =
+      "<h1>Error Loading Results</h1><p>Please return to the diagnosis page and try again.</p>";
+    return;
+  }
+
+  const data = JSON.parse(resultJson);
+
+  // --- 1. Header and Status ---
+  const headerElement = document.getElementById("diagnosis-header-text");
+  const statusIndicator = document.getElementById("status-indicator-dot");
+
+  if (headerElement)
+    headerElement.textContent = `Diagnosis Complete: ${
+      data.health_status && data.health_status.toLowerCase() === "healthy"
+        ? "Healthy!"
+        : "Sickness Found"
+    }`;
+  if (statusIndicator) {
+    statusIndicator.className =
+      "status-indicator " + (data.status_class || "status-unhealthy");
+  }
+
+  // --- 2. Scanned Image ---
+  const scannedImage = document.getElementById("scanned-plant-image");
+  if (scannedImage && imageURL) {
+    scannedImage.src = imageURL;
+  }
+
+  // --- 3. Result Details ---
+  if (document.getElementById("plant-identified"))
+    document.getElementById("plant-identified").textContent = data.plant_name;
+  if (document.getElementById("result-disease-name"))
+    document.getElementById("result-disease-name").textContent = data.disease;
+  if (document.getElementById("result-health-status"))
+    document.getElementById("result-health-status").textContent =
+      data.health_status;
+  if (document.getElementById("result-confidence"))
+    document.getElementById("result-confidence").textContent = data.confidence;
+
+  // --- 4. Cause (New Field) ---
+  const causeText = document.getElementById("diagnosis-cause-text");
+  if (causeText) {
+    causeText.textContent =
+      data.cause || "No specific cause information available.";
+  }
+
+  // --- 5. Treatment Steps (New Field) ---
+  const treatmentList = document.getElementById("treatment-plan-list");
+  if (treatmentList && Array.isArray(data.treatment_steps)) {
+    treatmentList.innerHTML = "";
+    data.treatment_steps.forEach((step, index) => {
+      // Note: If you want numbered steps, use an <ol> in HTML and <li> here
+      const listItem = document.createElement("li");
+      listItem.textContent = step.replace(/^\d+\.\s*/, ""); // Remove leading numbers if present
+      treatmentList.appendChild(listItem);
+    });
+  }
+
+  // --- 6. Farmer Summary & Audio Setup (Krio Feature) ---
+  const farmerSummary = document.getElementById("farmer-summary-text");
+  if (farmerSummary) {
+    farmerSummary.textContent = data.recommendation_summary;
+  }
+
+  // Attach Krio Audio Listeners
+  const listenKrioBtn = document.getElementById("listen-krio-btn");
+  if (listenKrioBtn) {
+    // *** MODIFICATION HERE ***: Call the new chaining function on click
+    listenKrioBtn.onclick = () => playFullKrioDiagnosis(data);
+  }
+
+  // Optional: If you have a separate button for the summary audio, use summary_audio_key here.
+}
+
+// ----------------------------------------------------
+// 6. Initialisation and Event Listeners (CONSOLIDATED)
 // ----------------------------------------------------
 
 function initializeScanFeature() {
@@ -378,8 +580,14 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }); // Checkout Page
 
-  displayCheckoutSummary(); // Diagnosis Page: Initialize the core scan features // Check for the presence of diagnosis elements before initializing
+  displayCheckoutSummary();
 
+  // Check if we are on the result page to run the display logic
+  if (window.location.pathname.includes("result.html")) {
+    displayDiagnosisResult();
+  }
+
+  // Diagnosis Page: Initialize the core scan features
   if (cameraContainer) {
     initializeScanFeature();
   }

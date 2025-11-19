@@ -1,14 +1,17 @@
 // netlify/functions/diagnose.js
 const { GoogleGenAI } = require("@google/genai");
-require("dotenv").config();
+// require("dotenv").config(); // REMOVED: Netlify production uses dashboard variables
 
 // 1. Initialize Gemini Client
+// Netlify production environment variables are accessed directly via process.env
 const apiKey = process.env.GEMINI_API_KEY;
 if (!apiKey) {
+  // Use a more generic message for the Netlify logs since the key is a secret
   console.error(
-    "FATAL ERROR: GEMINI_API_KEY is missing in Netlify environment variables."
+    "FATAL ERROR: GEMINI_API_KEY is missing in environment variables."
   );
 }
+// Note: If apiKey is undefined, the ai object creation will likely fail later, which is handled by the try/catch.
 const ai = new GoogleGenAI({ apiKey });
 
 // Helper function from your original server.js
@@ -23,7 +26,7 @@ function dataURLToGenerativePart(imageDataURL) {
   };
 }
 
-// --- STRUCTURED OUTPUT CONFIGURATION (MODIFIED for Krio Audio Keys) ---
+// --- STRUCTURED OUTPUT CONFIGURATION (MODIFIED for Krio Audio Keys, Cause, and Treatment) ---
 const systemInstruction =
   "You are the 'Salone Plant Doctor' expert. Your sole purpose is to analyze the user-provided image of a plant and provide a highly concise, structured diagnosis and treatment plan tailored for easy comprehension by a local farmer in Sierra Leone. For the fields 'disease_audio_key' and 'summary_audio_key', you MUST output a single, URL-friendly, lowercase, hyphenated key (e.g., 'late-blight' or 'increase-water'). Do not output the full translation. Focus only on Tomato, Cassava, and Lettuce diagnosis.";
 
@@ -43,22 +46,24 @@ const responseSchema = {
       type: "string",
       description:
         "The most probable plant disease or deficiency name, or 'None' if healthy.",
-    }, // 👇 NEW: Audio Key 1 for Disease
+    },
     disease_audio_key: {
       type: "string",
       description:
         "A single, lowercase, hyphenated key based on the disease name (e.g., 'early-blight' or 'healthy'). MUST be URL-friendly.",
-    }, // 👆 END NEW FIELD 1
+    },
     confidence: {
       type: "string",
       description: "A confidence rating: High, Medium, or Low.",
     },
     cause: {
+      // <--- REQUIRED FOR THE 'CAUSE' SECTION
       type: "string",
       description:
         "A very brief, 1-2 sentence explanation of the cause of the issue, using simple language.",
     },
     treatment_steps: {
+      // <--- REQUIRED FOR THE 'TREATMENT PLAN' SECTION
       type: "array",
       items: {
         type: "string",
@@ -72,12 +77,13 @@ const responseSchema = {
       type: "string",
       description:
         "A single, short, encouraging sentence summarizing the most important next step for the farmer (e.g., 'Start fungicide treatment immediately.').",
-    }, // 👇 NEW: Audio Key 2 for Summary
+    },
     summary_audio_key: {
+      // <--- REQUIRED FOR THE 'SUMMARY AUDIO'
       type: "string",
       description:
         "A single, lowercase, hyphenated key representing the summary's core action (e.g., 'start-fungicide' or 'keep-monitoring'). MUST be URL-friendly.",
-    }, // 👆 END NEW FIELD 2
+    },
     status_class: {
       type: "string",
       description:
@@ -92,22 +98,24 @@ const responseSchema = {
     "cause",
     "treatment_steps",
     "recommendation_summary",
-    "disease_audio_key", // 👈 ADDED
-    "summary_audio_key", // 👈 ADDED
+    "disease_audio_key",
+    "summary_audio_key",
     "status_class",
   ],
 };
 // --- END STRUCTURED OUTPUT CONFIGURATION ---
 
-// 2. The Netlify Handler (Replaces app.post('/diagnose'))
+// 2. The Netlify Handler
 exports.handler = async (event, context) => {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method Not Allowed" };
   }
 
   try {
-    // Netlify requires parsing the body string
-    // Netlify Function payload limit is 6MB. Your compression should keep it safe.
+    if (!apiKey) {
+      throw new Error("API Key not configured.");
+    }
+
     const { imageDataURL, prompt } = JSON.parse(event.body);
 
     if (!imageDataURL || !prompt) {
@@ -117,7 +125,7 @@ exports.handler = async (event, context) => {
       };
     }
 
-    const imagePart = dataURLToGenerativePart(imageDataURL); // 3. CALL THE GEMINI API
+    const imagePart = dataURLToGenerativePart(imageDataURL);
 
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
@@ -131,17 +139,20 @@ exports.handler = async (event, context) => {
 
     const diagnosisData = JSON.parse(response.text);
 
+    // Add the image data URL to the response for display on the frontend result page
+    diagnosisData.image_data_url = imageDataURL;
+
     return {
       statusCode: 200,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(diagnosisData),
     };
   } catch (error) {
-    console.error("Error during Gemini API call:", error.message);
+    console.error("Error during diagnosis:", error.message);
     return {
       statusCode: 500,
       body: JSON.stringify({
-        error: "Internal server error in Netlify Function.",
+        error: "Diagnosis processing failed.",
         details: error.message,
       }),
     };

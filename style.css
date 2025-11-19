@@ -709,101 +709,172 @@ footer {
 }
 
 /* ==================================== */
-/* 10. Diagnosis Result Page Styles (result.html) */
+/* 10. Diagnosis Result Page Styles (result.html) - MODIFIED */
 /* ==================================== */
 
-/* --- General Result Page Structure --- */
-.result-page-container {
-  background-color: var(--color-white);
-  padding: 30px;
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-light);
-  margin: 20px auto;
+/* --- Status Indicator Styles (NEW) --- */
+.status-indicator {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-right: 10px;
+  display: inline-block;
+  vertical-align: middle;
 }
 
-/* Add basic styling for the diagnosis content to avoid plain text */
-.result-page-container h2,
-.result-page-container h3 {
-  margin-top: 25px;
-  margin-bottom: 15px;
-  color: var(--color-text);
+/* Green: Healthy / No Sickness */
+.status-indicator.status-healthy {
+  background-color: var(--color-success); /* Brighter green */
+  box-shadow: 0 0 10px rgba(46, 204, 113, 0.7);
 }
 
-.result-page-container p {
-  margin-bottom: 15px;
+/* Red: Sickness or Error */
+.status-indicator.status-unhealthy,
+.status-indicator.status-error {
+  background-color: var(--color-error); /* Red */
+  box-shadow: 0 0 10px rgba(231, 76, 60, 0.7);
 }
 
-/* --- Action Buttons in Result Page (The Fix) --- */
-.result-action-buttons {
-  /* Ensures buttons are centered and spaced */
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 40px; /* Increased gap */
-  margin: 40px 0 20px 0;
-  padding: 20px;
-  border-top: 1px solid var(--color-secondary);
-}
-
-/* Base style for ALL buttons in this group */
-.result-action-buttons button,
-.result-action-buttons a {
-  /* Resetting generic button styles for better control */
-  border-radius: 50px; /* Use the rounded button style */
-  padding: 12px 28px;
-  font-size: 1rem;
-  font-weight: 600;
-  min-width: 250px; /* Make them substantial */
-  transition: all 0.3s ease;
-
-  /* Ensure icon and text are always horizontal and centered */
+.result-header-container {
   display: flex;
   align-items: center;
-  align-content: center;
-  align-self: center;
-  justify-content: center;
-  gap: 10px; /* Space between icon and text */
+  margin-bottom: 10px;
 }
 
-/* 1. Primary Button (Go to Shop for Supplies) */
-.result-action-buttons .primary-btn {
-  background-color: var(--color-primary);
-  color: var(--color-white);
-  box-shadow: 0 4px 10px rgba(56, 142, 60, 0.4); /* Stronger shadow */
-  border: none;
+.result-header-container h1 {
+  display: inline-block;
+  color: var(--color-primary);
+  font-size: 2rem;
+  margin-bottom: 0;
 }
 
-.result-action-buttons .primary-btn:hover {
-  background-color: var(--color-primary-dark);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(56, 142, 60, 0.6);
+/* --- Responsive Grid Layout (MODIFIED) --- */
+.main-results-layout {
+  /* Desktop: Image on left, Details on right */
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 30px;
+  padding: 20px 0;
 }
 
-/* 2. Secondary Button (Start New Scan) */
-.result-action-buttons .secondary-btn {
-  background-color: transparent; /* Clear background */
+/* Scanned Image container styling */
+.scanned-image-container {
+  padding: 10px;
+  border: 1px solid var(--color-secondary);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+  margin-bottom: 20px;
+}
+.scanned-image-container img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--border-radius);
+  display: block;
+}
+
+/* Sidebar and Content Styling */
+.results-sidebar h2 {
   color: var(--color-primary-dark);
-  border: 2px solid var(--color-primary); /* Clear, visible border */
+  font-size: 1.5rem;
+}
+.results-sidebar i.fas {
+  color: var(--color-primary);
+  font-size: 1.8rem;
+  margin-right: 10px;
 }
 
-.result-action-buttons .secondary-btn:hover {
-  background-color: var(--color-primary);
-  color: var(--color-white);
-  border-color: var(--color-primary);
+.diagnosis-detail-section,
+#treatment-plan,
+.recommendation-box {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: var(--color-secondary);
+  border-radius: var(--border-radius);
+}
+
+.recommendation-box {
+  background-color: var(
+    --color-status-healthy-bg
+  ); /* Light green background for summary */
+  border: 1px solid var(--color-primary);
+}
+
+/* --- Consolidated Primary Action Button Group (NEW) --- */
+.action-buttons-container {
+  margin-top: 40px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+  border-top: 1px solid var(--color-secondary);
+  padding-top: 30px;
+}
+
+.cta-button {
+  text-decoration: none;
+  padding: 15px 25px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+  flex-grow: 1;
+  max-width: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* Styles for specific CTA buttons */
+.chat-expert-btn {
+  background-color: #4caf50; /* WhatsApp/Success Green */
+  color: white;
+  box-shadow: 0 4px 10px rgba(76, 175, 80, 0.4);
+}
+
+.shop-supplies-btn {
+  background-color: #ff9800; /* Shop Orange */
+  color: white;
+  box-shadow: 0 4px 10px rgba(255, 152, 0, 0.4);
+}
+
+.new-scan-btn {
+  background-color: #2196f3; /* Info Blue */
+  color: white;
+  box-shadow: 0 4px 10px rgba(33, 150, 243, 0.4);
+}
+
+.cta-button:hover {
   transform: translateY(-2px);
+  opacity: 0.9;
 }
 
-/* --- Mobile Responsiveness --- */
-@media (max-width: 600px) {
-  .result-action-buttons {
-    flex-direction: column; /* Stack vertically on mobile */
-    align-items: center;
-    gap: px;
+/* --- Mobile Responsiveness for Result Page (MODIFIED) --- */
+@media (max-width: 768px) {
+  /* 1. Stack the main layout columns vertically */
+  .main-results-layout {
+    grid-template-columns: 1fr; /* Single column layout for mobile */
+    gap: 20px;
+    padding: 10px;
   }
 
-  .result-action-buttons button,
-  .result-action-buttons a {
-    width: 100; /* Almost full width on mobile */
-    min-width: unset;
+  /* 2. Stack the action buttons vertically and make them full width */
+  .action-buttons-container {
+    flex-direction: column;
+    gap: 10px;
+    padding: 0 10px;
+  }
+
+  .cta-button {
+    max-width: 100%; /* Full width buttons on mobile */
+    font-size: 18px; /* Larger tap target */
+    padding: 18px;
+  }
+
+  /* Ensure result page container is not too wide */
+  .result-page-container {
+    padding: 20px 10px;
   }
 }

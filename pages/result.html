@@ -1,200 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
-           
   <head>
-                       
     <meta charset="UTF-8" />
-                       
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                       
+
     <title>Diagnosis Result - Salone Plant Doctor</title>
-                       
+
     <link rel="stylesheet" href="../style.css" />
-                       
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
     />
-                 
   </head>
-           
+
   <body>
-                       
     <header>
-                                   
       <div class="logo">
-                                <a href="../index.html">Back</a>                
-                <span>Salone Plant Doctor</span>                  
+        <a href="../index.html">Back</a>
+        <span>Salone Plant Doctor</span>
       </div>
-                                   
+
       <nav class="main-nav">
-                                               
         <ul>
-                                                           
           <li><a href="../index.html">Home</a></li>
-                                                           
           <li><a href="#">Services</a></li>
-                                                           
           <li><a href="shop.html">Shop</a></li>
-                                                     
         </ul>
-                                         
       </nav>
-                        <button class="auth-btn">Log In / Sign</button>        
-         
+      <button class="auth-btn">Log In / Sign</button>
     </header>
 
-                       
-    <main class="container diagnosis-page-container">
-                       
+    <main class="container result-page-container">
       <div class="diagnosis-feature-box">
-                                               
-        <h1>Diagnosis Complete</h1>
-                                               
+        <div class="result-header-container">
+          <div id="diagnosis-status-indicator" class="status-indicator"></div>
+
+          <h1 id="result-plant-name">Diagnosis Complete</h1>
+        </div>
+
         <p class="subtitle">
-                                       
-          <strong id="diagnosis-plant-name"
-            >Plant identified accurately.</strong
-          >
-                                                     
+          <strong id="diagnosis-sub-title">Plant identified accurately.</strong>
         </p>
 
-                                               
-        <div class="scan-results-grid">
-                                                           
+        <div class="main-results-layout">
           <div class="results-sidebar">
-                                               
-            <i class="fas fa-microscope"></i>                                  
-                         
+            <i class="fas fa-microscope"></i>
             <h2>Scan Result</h2>
-                                                                 
-          </div>
+            <p id="diagnosis-plant-name">Plant identified accurately.</p>
 
-                                                           
-          <div class="results-content">
-                                                                               
-               
             <div id="result-photo-display" class="scanned-image-container">
-                                                                               
-                 
               <img
                 src="../assets/placeholder-cassava-leaf.jpg"
                 alt="Scanned Plant Leaf"
               />
-                                                                             
             </div>
+          </div>
 
-                                                                               
-               
+          <div class="results-content">
             <div id="status-header" class="diagnosis-text">
-                                                                               
-                 
               <h2 id="diagnosis-health-status">Loading Diagnosis...</h2>
-                                                                               
-                               
               <p id="diagnosis-issue">Loading specific issue...</p>
-                                                                               
-                 
               <p id="diagnosis-confidence">Loading confidence level...</p>
-                                                                             
             </div>
 
-                                                                       
             <div class="diagnosis-detail-section">
-                                                                               
-                 
               <h4>Why is this happening? (Cause)</h4>
-                                                                               
-                 
               <p id="diagnosis-cause">Loading cause...</p>
-                                                                             
             </div>
 
-                                                                       
-            <div class="recommendation-box">
-                                                                               
-                 
-              <h4>🌱 Farmer Summary (What to Do)</h4>
-                                                                               
-                 
-              <p id="recommendation-summary">Loading summary...</p>
-                                                                             
-            </div>
-
-                                                                       
-            <div class="action-buttons" style="margin-bottom: 30px">
-                                                                               
-                 
-              <button id="play-audio-krio-btn" class="secondary-btn">
-                                                                               
-                <i class="fas fa-volume-up"></i> Listen in Krio                
-                                                                         
-              </button>
-                                                                               
-                 
-              <button id="save-result-btn" class="secondary-btn">
-                                                               
-                <i class="fas fa-save"></i> Save                 Result        
-                                                                 
-              </button>
-                                                                             
-            </div>
-
-                                                                       
             <div id="treatment-plan">
-                                                                               
-                 
               <h4>Recommended Treatment Plan</h4>
-                                                                               
-                 
               <ol id="treatment-plan-list">
-                                                                               
-                               
                 <li>Loading treatment steps...</li>
-                                                                               
-                         
               </ol>
-                                                                             
             </div>
 
-                                               
-            <div class="result-action-buttons">
-                           
-              <a href="shop.html" class="primary-btn">
-                                                   
-                <i class="fas fa-shopping-cart"></i> Go to                 Shop
-                for Supplies                                          
+            <div class="recommendation-box">
+              <h4>🌱 Farmer Summary (What to Do)</h4>
+              <p id="recommendation-summary">Loading summary...</p>
+            </div>
+
+            <div class="action-buttons-secondary" style="margin-bottom: 30px">
+              <button id="play-audio-krio-btn" class="secondary-btn">
+                <i class="fas fa-volume-up"></i> Listen in Krio
+              </button>
+              <button id="save-result-btn" class="secondary-btn">
+                <i class="fas fa-save"></i> Save Result
+              </button>
+            </div>
+
+            <div class="action-buttons-container">
+              <a
+                href="https://wa.me/<your_expert_whatsapp_number>"
+                target="_blank"
+                class="cta-button chat-expert-btn"
+              >
+                <i class="fas fa-comments"></i> Chat with Expert
               </a>
 
-                                                         
-              <button
-                id="finish-scan-button"
-                class="secondary-btn"
-                onclick="window.location.href='diagnosis.html';"
-              >
-                                                   
-                <i class="fas fa-redo"></i> Start New Scan                      
-                                                 
-              </button>
-                                                   
+              <a href="shop.html" class="cta-button shop-supplies-btn">
+                <i class="fas fa-shopping-cart"></i> Go to Shop for Supplies
+              </a>
+
+              <a href="diagnosis.html" class="cta-button new-scan-btn">
+                <i class="fas fa-redo-alt"></i> Start New Scan
+              </a>
             </div>
-                                           
           </div>
-                                                     
         </div>
-                                         
       </div>
-                             
     </main>
 
-                       
     <footer>
-                                   
       <p>&copy; Salone Plant Doctor | Privacy Policy | Terms of Service</p>
-                             
     </footer>
 
-                       
     <script>
       // --- START PHASE 3: KRIO AUDIO PLAYBACK LOGIC ---
 
@@ -272,26 +192,34 @@
 
         // Re-enable button after both clips finish (or an error occurs)
         button.disabled = false;
-        button.textContent = '<i class="fas fa-volume-up"></i> Listen in Krio';
+        button.innerHTML = '<i class="fas fa-volume-up"></i> Listen in Krio';
       }
 
-      // --- EXISTING DOM CONTENT LOADED LOGIC (MODIFIED) ---
+      // --- EXISTING DOM CONTENT LOADED LOGIC (MODIFIED for Status Indicator) ---
 
       document.addEventListener("DOMContentLoaded", () => {
         // 1. Retrieve data from Local Storage
         const resultDataJson = localStorage.getItem("diagnosisResult");
-        const scannedImageURL = localStorage.getItem("scannedImageURL"); // --- DOM Elements to Populate ---
+        const scannedImageURL = localStorage.getItem("scannedImageURL");
 
+        // --- DOM Elements to Populate ---
         const resultPhotoDisplay = document.getElementById(
           "result-photo-display"
-        ); // The status-header div now uses the 'diagnosis-text' class by default, // and the dynamic status class is added in the styling section (A).
+        );
+        const statusIndicator = document.getElementById(
+          "diagnosis-status-indicator"
+        ); // NEW
+        const diagnosisSubTitle = document.getElementById(
+          "diagnosis-sub-title"
+        ); // NEW
         const statusHeader = document.getElementById("status-header");
+        const resultPlantName = document.getElementById("result-plant-name"); // Changed from diagnosis-plant-name to target the H1
         const diagnosisHealthStatus = document.getElementById(
           "diagnosis-health-status"
         );
         const diagnosisPlantName = document.getElementById(
           "diagnosis-plant-name"
-        );
+        ); // Now targeting the p in the sidebar
         const diagnosisIssue = document.getElementById("diagnosis-issue");
         const diagnosisConfidence = document.getElementById(
           "diagnosis-confidence"
@@ -307,64 +235,81 @@
         if (!resultDataJson) {
           console.error(
             "No diagnosis data found in localStorage. Redirecting to input."
-          ); // Fallback: If no data, send the user back to diagnosis page
+          );
           window.location.href = "diagnosis.html";
           return;
         }
 
-        const data = JSON.parse(resultDataJson); // The variable 'data' now holds the AI's result.
+        const data = JSON.parse(resultDataJson);
 
-        // --- AUDIO PLAYBACK SETUP (MODIFIED) ---
-        // Find the button and attach the new playback function, passing the 'data' variable
+        // --- 2. Color Status and Header Logic ---
+        const healthStatus = data.health_status
+          ? data.health_status.toLowerCase()
+          : "error";
+        let statusClass = "status-error"; // Default to error
+
+        if (healthStatus === "healthy" || healthStatus === "no disease found") {
+          statusClass = "status-healthy";
+          resultPlantName.textContent = "Diagnosis Complete: Healthy!";
+          diagnosisSubTitle.textContent = data.plant_name
+            ? `Plant identified: ${data.plant_name}`
+            : "Plant identified accurately.";
+        } else if (healthStatus !== "error") {
+          statusClass = "status-unhealthy";
+          resultPlantName.textContent = "Diagnosis Complete: Sickness Found";
+          diagnosisSubTitle.textContent = data.plant_name
+            ? `Plant identified: ${data.plant_name}`
+            : "Plant identified accurately.";
+        } else {
+          // Error Case
+          resultPlantName.textContent = "Diagnosis Failed";
+          diagnosisSubTitle.textContent =
+            data.cause || "Could not connect to AI server. Please try again.";
+        }
+
+        if (statusIndicator) {
+          statusIndicator.classList.add(statusClass);
+        }
+        if (statusHeader && data.status_class) {
+          statusHeader.className = `diagnosis-text ${data.status_class}`;
+        }
+
+        // --- 3. Audio Playback Setup ---
         const playAudioBtn = document.getElementById("play-audio-krio-btn");
         if (playAudioBtn) {
           playAudioBtn.addEventListener("click", () => {
-            playFullKrioDiagnosis(data); // Pass the diagnosis data directly
+            playFullKrioDiagnosis(data);
           });
-        } // ----------------------------------------------------
-        // END AUDIO PLAYBACK SETUP
+        }
 
-        // A. Image Display and Page Styling
-        // ----------------------------------------------------
-        // Display the image that was scanned
-
+        // 4. Image Display
         if (resultPhotoDisplay && scannedImageURL) {
-          // Replaces the placeholder image with the scanned image
           resultPhotoDisplay.innerHTML = `<img src="${scannedImageURL}" alt="Scanned Plant Photo">`;
-        } // Apply the correct CSS class (status-healthy or status-unhealthy)
+        }
 
-        if (statusHeader && data.status_class) {
-          // Ensure it keeps the base 'diagnosis-text' class
-          statusHeader.className = `diagnosis-text ${data.status_class}`;
-        } // ----------------------------------------------------
-        // B. Diagnosis Summary Hydration
-        // ----------------------------------------------------
-        // Plant Name (e.g., Plant Identified: Cassava)
-
+        // 5. Diagnosis Summary Hydration
         if (diagnosisPlantName) {
-          diagnosisPlantName.innerHTML = `Plant Identified: <strong>${
+          diagnosisPlantName.innerHTML = `<strong>Plant:</strong> ${
             data.plant_name || "Unknown"
-          }</strong>`;
-        } // Status Header Content (Health Status and Disease Name)
+          }`;
+        }
 
         if (diagnosisHealthStatus) {
           const statusIcon =
-            data.health_status === "Healthy"
+            healthStatus === "healthy" || healthStatus === "no disease found"
               ? '<i class="fas fa-check-circle"></i>'
-              : '<i class="fas fa-exclamation-triangle"></i>'; // Use the disease name/status in the main header
-          diagnosisHealthStatus.innerHTML = `${statusIcon} Diagnosis: <strong>${
+              : '<i class="fas fa-exclamation-triangle"></i>';
+          diagnosisHealthStatus.innerHTML = `${statusIcon} Result: <strong>${
             data.disease || data.health_status
           }</strong>`;
-        } // Detailed Diagnosis Fields
+        }
 
         if (diagnosisIssue) {
-          // Display Health Status clearly right below the main diagnosis
           diagnosisIssue.innerHTML = `<strong>Health Status:</strong> <span class="${
             data.status_class || ""
           }">${data.health_status || "N/A"}</span>`;
         }
         if (diagnosisConfidence) {
-          // Use the confidence name to apply CSS (e.g., confidence-high)
           const confidenceClass = `confidence-${(
             data.confidence || "low"
           ).toLowerCase()}`;
@@ -375,17 +320,16 @@
         if (diagnosisCause) {
           diagnosisCause.innerHTML =
             data.cause || "No specific cause provided.";
-        } // Farmer Summary
+        }
 
         if (recommendationSummary) {
           recommendationSummary.textContent =
             data.recommendation_summary || "Please consult an expert.";
-        } // ----------------------------------------------------
-        // C. Treatment Steps
-        // ----------------------------------------------------
+        }
 
+        // 6. Treatment Steps
         if (treatmentPlanList) {
-          treatmentPlanList.innerHTML = ""; // Clear hardcoded steps
+          treatmentPlanList.innerHTML = "";
           const steps = data.treatment_steps || [];
 
           if (steps.length === 0) {
@@ -399,8 +343,9 @@
               treatmentPlanList.appendChild(li);
             });
           }
-        } // --- Action Button Listeners (ONLY SAVE REMAINS HERE) ---
+        }
 
+        // 7. Save Button Listener
         const saveResultBtn = document.getElementById("save-result-btn");
         if (saveResultBtn) {
           saveResultBtn.addEventListener("click", () => {
@@ -409,6 +354,5 @@
         }
       });
     </script>
-                 
   </body>
 </html>
